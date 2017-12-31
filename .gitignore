@@ -4,6 +4,7 @@ packages
 
 .idea
 .paket/paket.exe
+.paket/paket.targets
 .paket/Paket.Restore.targets
 paket-files
 

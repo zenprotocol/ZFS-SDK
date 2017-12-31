@@ -72,4 +72,5 @@
       </ItemGroup>
     </When>
   </Choose>
+  <Import Project="packages\ZFS-Tools\build\ZFS-Tools.targets" Condition="Exists('packages\ZFS-Tools\build\ZFS-Tools.targets')" Label="Paket" />
 </Project>

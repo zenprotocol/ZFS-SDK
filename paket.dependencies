@@ -1,1 +1,4 @@
 source https://www.nuget.org/api/v2
+nuget FSharp.Compiler.Tools 4.1.23 restriction: >= net45
+nuget FSharp.Core 4.1.18 restriction: >= net45
+nuget System.ValueTuple 4.3.0 restriction: >= net45

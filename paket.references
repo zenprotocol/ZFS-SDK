@@ -3,3 +3,7 @@ FSharp.Compiler.Tools
 System.ValueTuple
 ZFS-Tools
 FSharpx.Extras
+
+zen_z3_osx
+
+//File: .gitlab-ci.yml

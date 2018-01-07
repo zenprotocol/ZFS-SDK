@@ -1,8 +1,28 @@
+RESTRICTION: == net462
 NUGET
   remote: https://www.nuget.org/api/v2
-    FSharp.Compiler.Tools (4.1.23) - restriction: >= net45
+    Argu (4.2.1)
+      FSharp.Core (>= 3.1.2)
+    AsyncIO (0.1.40)
+    Baseclass.Contrib.Nuget.Output (2.4.1)
+    BouncyCastle (1.8.1)
+    FsBech32 (0.1.0.7)
+      FSharp.Compiler.Tools
+      FSharp.Core
+    FsCheck (2.10.6)
+      FSharp.Core (>= 4.0.0.1)
+    FsCheck.NUnit (2.10.6)
+      FsCheck (2.10.6)
+      NUnit (>= 3.8.1 < 4.0)
+    FSharp.Compatibility.OCaml (0.1.12)
+    FSharp.Compiler.Tools (4.1.23)
+    FSharp.Configuration (1.3.1)
+      FSharp.Core (>= 4.0.0.1)
     FSharp.Control.AsyncSeq (2.0.18)
+    FSharp.Control.Reactive (3.5)
+      System.Reactive (>= 3.0)
     FSharp.Core (4.1.18)
+    FSharp.Data (2.4.3)
     FSharpx.Async (1.13.2)
       FSharp.Control.AsyncSeq
       FSharp.Core
@@ -11,5 +31,48 @@ NUGET
     FSharpx.Extras (2.2.1)
       FSharpx.Async
       FSharpx.Collections
-    System.ValueTuple (4.3) - restriction: >= net45
-    ZFS-Tools (0.0.1)
+    FsNetMQ (0.2.7)
+      FSharp.Core
+      NetMQ (>= 4.0.0.156-pre)
+    FsPickler (4.5)
+      FSharp.Core (>= 3.1)
+    FsUnit (3.0)
+      FSharp.Core (>= 3.1.2.5)
+      NUnit (>= 3.6)
+    Microsoft.NETCore.Platforms (2.0.1)
+    NetMQ (4.0.0.156-pre)
+      AsyncIO (>= 0.1.40)
+    NETStandard.Library (2.0.1)
+      Microsoft.NETCore.Platforms (>= 1.1)
+    NUnit (3.9)
+    System.Collections.Immutable (1.4)
+      NETStandard.Library (>= 1.6.1)
+    System.Reactive (3.1.1)
+      System.Reactive.PlatformServices (>= 3.1.1)
+      System.Reactive.Windows.Threading (>= 3.1.1)
+    System.Reactive.Core (3.1.1)
+      System.Reactive.Interfaces (>= 3.1.1)
+    System.Reactive.Interfaces (3.1.1)
+    System.Reactive.Linq (3.1.1)
+      System.Reactive.Core (>= 3.1.1)
+    System.Reactive.PlatformServices (3.1.1)
+      System.Reactive.Linq (>= 3.1.1)
+    System.Reactive.Windows.Threading (3.1.1)
+      System.Reactive.Core (>= 3.1.1)
+    System.Reflection.Metadata (1.5)
+      NETStandard.Library (>= 1.6.1)
+      System.Collections.Immutable (>= 1.4)
+    System.ValueTuple (4.3)
+    Zen.FSharp.Compiler.Service (13.0.1)
+      System.Collections.Immutable (>= 1.3.1)
+      System.Reflection.Metadata (>= 1.4.2)
+    zen_secp256k1_linux (0.1.0.18)
+      Baseclass.Contrib.Nuget.Output (>= 2.4)
+    zen_secp256k1_osx (0.1.0.25-v6ad5cdb42a1a)
+    zen_z3_linux (4.5.1.7-v1f29cebd4df)
+    zen_z3_osx (4.5.1.7-v1f29cebd4df6)
+    ZFS-Tools (0.0.2)
+    ZFStar (0.0.4)
+GIT
+  remote: git@gitlab.com:zenprotocol/zenprotocol.git
+     (92bf173bbc4bfcd645639213e71b0607aaacf66f)

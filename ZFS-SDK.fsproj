@@ -38,6 +38,12 @@
     <Reference Include="basic, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\basic.dll</HintPath>
     </Reference>
+    <Reference Include="Consensus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\Consensus.dll</HintPath>
+    </Reference>
+    <Reference Include="FsBech32, Version=0.1.0.7, Culture=neutral, PublicKeyToken=null">
+      <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\FsBech32.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Compatibility.OCaml, Version=0.1.12.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\FSharp.Compatibility.OCaml.dll</HintPath>
     </Reference>
@@ -54,11 +60,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>packages\System.Reflection.Metadata\lib\netstandard1.1\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
     <Reference Include="Zen.FSharp.Compiler.Service, Version=13.0.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Infrastructure\bin\Debug\Zen.FSharp.Compiler.Service.dll</HintPath>
+    </Reference>
+    <Reference Include="Zen.FSharp.Compiler.Service, Version=13.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\Zen.FSharp.Compiler.Service.dll</HintPath>
     </Reference>
     <Reference Include="ZFS_Tools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\ZFS_Tools.dll</HintPath>
@@ -75,8 +81,10 @@
     <Content Include="Tests\Compile.Test.fst" />
     <Content Include="Tests\Elab.Test.fst" />
     <Content Include="Tests\Extract.Test.fst" />
+    <Content Include="Tests\Run.Test.fst" />
     <Content Include="Tests\Verify.Test.fst" />
     <None Include="App.config" />
+    <None Include="Tests\simpleTxSkel.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <FSharpTargetsPath>.\packages\FSharp.Compiler.Tools.4.1.23\tools\Microsoft.FSharp.Targets</FSharpTargetsPath>
@@ -87,6 +95,17 @@
       <PropertyGroup>
         <__paket__zen_z3_osx_targets>net40\zen_z3_osx</__paket__zen_z3_osx_targets>
       </PropertyGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="FsBech32">
+          <HintPath>packages\FsBech32\lib\net45\FsBech32.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
     </When>
   </Choose>
   <Choose>

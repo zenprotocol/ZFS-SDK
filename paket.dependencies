@@ -25,5 +25,6 @@ nuget ZFStar
 nuget Argu
 nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
+nuget System.Reflection.Metadata 1.4.2
 
 git git@gitlab.com:zenprotocol/zenprotocol.git

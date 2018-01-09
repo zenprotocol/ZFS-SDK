@@ -9,3 +9,5 @@ packages
 paket-files
 
 *.nupkg
+
+Tests/Elaborated

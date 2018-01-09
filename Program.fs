@@ -32,19 +32,37 @@ let elab_file (filepath:string) : unit =
     printfn "Wrote elaborated source to %s" elaboratedFilePath
     
 [<EntryPoint>]
-let main argv =
+let rec main argv =
     match argv with
     | [| "--help" |] -> showUsage()
     | [| sourceFilePath |] -> showUsage()
     | [| sourceFilePath; option |] ->
         match option with
-        | "-e" -> elab_file sourceFilePath
+        | "-e" -> 
+            elab_file sourceFilePath
         
-        | "-v" -> elab_file sourceFilePath
-                  let elaboratedDir = getDir sourceFilePath/"Elaborated"
-                  let elaboratedFilePath = elaboratedDir/Path.GetFileName sourceFilePath
-                  ZFS.verify elaboratedFilePath
+        | "-v" -> 
+            elab_file sourceFilePath
+            let elaboratedDir = getDir sourceFilePath/"Elaborated"
+            let elaboratedFilePath = elaboratedDir/Path.GetFileName sourceFilePath
+            ZFS.verify elaboratedFilePath
         
+        | "-x" -> 
+            elab_file sourceFilePath       
+            let elaboratedDir = getDir sourceFilePath/"Elaborated"
+            let elaboratedFilePath = elaboratedDir/Path.GetFileName sourceFilePath
+            ZFS.extract elaboratedFilePath
+        
+        | "-c" -> 
+            main [| sourceFilePath; "-x" |] |> ignore
+            let odir =
+                let dir = sourceFilePath |> Path.GetFullPath 
+                                         |> Path.GetDirectoryName
+                dir/"Elaborated"/"Output"
+            let outputFile = Path.ChangeExtension(Path.GetFileName sourceFilePath, ".fs")
+            let outputFilePath = odir/outputFile
+            ZFS.compile outputFilePath
+            
         | _ -> showUsage()
     | _ -> showUsage()
     

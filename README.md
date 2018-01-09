@@ -9,5 +9,6 @@
     ```
     cd ZFS-SDK
     chmod +x build.sh
+    .paket/paket.exe install
     ./build.sh
     ```   

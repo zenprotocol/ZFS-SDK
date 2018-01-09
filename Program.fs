@@ -10,7 +10,12 @@ let usage =
         <source file path>      The ZF* source file to use
     
     OPTIONS:
-        --help, -h              display this list of options
+        --help, -h              Display this list of options
+        -e                      Elaborate The source File
+        -v                      Verify the source file
+        -x                      Extract the source file
+        -c                      Compile from source file
+        -r <input file>         Run the contract on the input file.
     """
 let showUsage() : unit =
     printfn "%s" usage
@@ -34,8 +39,12 @@ let elab_file (filepath:string) : unit =
 [<EntryPoint>]
 let rec main argv =
     match argv with
-    | [| "--help" |] -> showUsage()
-    | [| sourceFilePath |] -> showUsage()
+    | [| "--help" |] -> 
+        showUsage()
+    
+    | [| sourceFilePath |] -> 
+        showUsage()
+    
     | [| sourceFilePath; option |] ->
         match option with
         | "-e" -> 
@@ -64,6 +73,12 @@ let rec main argv =
             ZFS.compile outputFilePath
             
         | _ -> showUsage()
-    | _ -> showUsage()
+    
+    | [| sourceFilePath; "-r"; inputFilePath |] ->
+        main [|sourceFilePath; "-c" |] |> ignore
+        ()
+    
+    | _ -> 
+        showUsage()
     
     0 // return an integer exit code

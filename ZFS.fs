@@ -62,9 +62,7 @@ let compile (fn:string) =
                          "-r"; expandPath "System.dll"
                          "-r"; expandPath "System.Numerics.dll"
                          "-r"; "Zulib.dll"
-                         "-r"; "FSharp.Compatibility.OCaml.dll" 
-                         //"-r"; "../../packages/System.Reflection.Metadata/lib/netstandard2.0/System.Reflection.Metadata.dll"
-                         "-r"; "../../packages/System.Reflection.Metadata/lib/portable-net45+win8/System.Reflection.Metadata.dll"
+                         "-r"; "FSharp.Compatibility.OCaml.dll"
                          "-a"; fn
                          "-o"; Path.ChangeExtension(fn, ".dll")
                       |]

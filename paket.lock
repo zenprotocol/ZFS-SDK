@@ -62,7 +62,7 @@ NUGET
     System.Reflection.Metadata (1.4.2)
       System.Collections.Immutable (>= 1.3.1)
     System.ValueTuple (4.3)
-    Zen.FSharp.Compiler.Service (13.0.1)
+    Zen.FSharp.Compiler.Service (17.0.1)
       System.Collections.Immutable (>= 1.3.1)
       System.Reflection.Metadata (>= 1.4.2)
     zen_secp256k1_linux (0.1.0.18)
@@ -74,4 +74,4 @@ NUGET
     ZFStar (0.0.4)
 GIT
   remote: git@gitlab.com:zenprotocol/zenprotocol.git
-     (92bf173bbc4bfcd645639213e71b0607aaacf66f)
+     (2d01c721d1d6f0e4916749b748f068b8b5de701d)

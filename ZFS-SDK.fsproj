@@ -41,11 +41,11 @@
     <Reference Include="Consensus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\Consensus.dll</HintPath>
     </Reference>
-    <Reference Include="FsBech32, Version=0.1.0.7, Culture=neutral, PublicKeyToken=null">
-      <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\FsBech32.dll</HintPath>
-    </Reference>
     <Reference Include="FSharp.Compatibility.OCaml, Version=0.1.12.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\FSharp.Compatibility.OCaml.dll</HintPath>
+    </Reference>
+    <Reference Include="FSharpx.Collections, Version=1.17.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\ZFS-Tools\bin\Debug\FSharpx.Collections.dll</HintPath>
     </Reference>
     <Reference Include="FSharpx.Extras, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\FSharpx.Extras.dll</HintPath>
@@ -60,6 +60,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\packages\System.Reflection.Metadata\lib\netstandard1.1\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="Zen.FSharp.Compiler.Service, Version=13.0.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Infrastructure\bin\Debug\Zen.FSharp.Compiler.Service.dll</HintPath>
     </Reference>
@@ -85,6 +88,7 @@
     <Content Include="Tests\Verify.Test.fst" />
     <None Include="App.config" />
     <None Include="Tests\simpleTxSkel.fsx" />
+    <None Include="Tests\testContract.fsx" />
   </ItemGroup>
   <PropertyGroup>
     <FSharpTargetsPath>.\packages\FSharp.Compiler.Tools.4.1.23\tools\Microsoft.FSharp.Targets</FSharpTargetsPath>

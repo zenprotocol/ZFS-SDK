@@ -46,7 +46,6 @@ let usage =
         -v                      Verify the source file
         -x                      Extract the source file
         -c                      Compile from source file
-        -r <input file>         Run the contract on the input file.
     """
 let showUsage() : unit =
     printfn "%s" usage
@@ -82,45 +81,12 @@ let rec main argv =
             let odir =
                 let dir = sourceFilePath |> Path.GetFullPath 
                                          |> Path.GetDirectoryName
-                dir/"Elaborated"/"Output"
+                dir/"fs"
             let outputFile = Path.ChangeExtension(Path.GetFileName sourceFilePath, ".fs")
             let outputFilePath = odir/outputFile
             ZFS.compile outputFilePath
             
         | _ -> showUsage()
-    
-    | [| sourceFilePath; "-r"; inputFilePath |] ->
-        main [|sourceFilePath; "-c" |] |> ignore
-        let odir =
-                        let dir = sourceFilePath |> Path.GetFullPath 
-                                                 |> Path.GetDirectoryName
-                        dir/"Elaborated"/"Output"
-        let dll = 
-            let dllFile = Path.ChangeExtension(Path.GetFileName sourceFilePath, ".dll")
-            odir / dllFile
-       
-        let contractHash =
-            sourceFilePath |> File.ReadAllText 
-                           |> System.Text.Encoding.UTF8.GetBytes
-                           |> Consensus.Hash.compute
-        
-        let contractAssembly = dll |> System.Reflection.Assembly.LoadFrom
-        let contractMainFunction = contractAssembly.GetModules().[0]
-                                                   .GetMethod("mainFunction")
-                                                   .Invoke(null, [||])
-                                                   :?> Zen.Types.Extracted.mainFunction
-        let contractCostFunction, contractMainFunction =
-            match contractMainFunction with 
-            | Zen.Types.Extracted.MainFunc (cf, mf) -> 
-                match cf with
-                | Zen.Types.Extracted.CostFunc(_, cf) -> cf, mf
-         
-        let inputTxSkeleton = 
-            //run_fsx inputFilePath
-            Consensus.ZFStar.convertInput Consensus.TxSkeleton.empty
-       
-        
-        ()
                      
     | _ ->
         showUsage()

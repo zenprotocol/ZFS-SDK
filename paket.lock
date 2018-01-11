@@ -34,7 +34,7 @@ NUGET
     FsNetMQ (0.2.7)
       FSharp.Core
       NetMQ (>= 4.0.0.156-pre)
-    FsPickler (4.5)
+    FsPickler (4.6)
       FSharp.Core (>= 3.1)
     FsUnit (3.0)
       FSharp.Core (>= 3.1.2.5)
@@ -74,4 +74,4 @@ NUGET
     ZFStar (0.0.4)
 GIT
   remote: git@gitlab.com:zenprotocol/zenprotocol.git
-     (2d01c721d1d6f0e4916749b748f068b8b5de701d)
+     (855547a65b3af5112021566f6a9de388b79f92a0)

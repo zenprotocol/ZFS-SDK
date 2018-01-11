@@ -41,8 +41,10 @@ let verify (fn:string) : unit =
 let extract (fn:string) : unit =
     let odir =
         let dir = fn |> Path.GetFullPath 
-                     |> Path.GetDirectoryName
-        dir/"Output"
+                             |> Path.GetDirectoryName
+                             |> Directory.GetParent
+        dir.FullName/"fs"
+  
     let module_name = ASTUtils.parse_file fn |> ASTUtils.get_module_name_str
     Directory.CreateDirectory odir |> ignore
     run_zfs fn 
@@ -52,6 +54,17 @@ let extract (fn:string) : unit =
 
 
 let compile (fn:string) =
+    let odir =
+        let dir = fn |> Path.GetFullPath 
+                     |> Path.GetDirectoryName
+                     |> Directory.GetParent
+        dir.FullName/"bin"
+    
+    Directory.CreateDirectory odir |> ignore
+    
+    let dll =
+        Path.ChangeExtension((odir / Path.GetFileName fn), ".dll")   
+    
     let checker = FSharpChecker.Create()
     let checkerArgs = [| "fsc.exe"
                          "--noframework"
@@ -64,7 +77,7 @@ let compile (fn:string) =
                          "-r"; "Zulib.dll"
                          "-r"; "FSharp.Compatibility.OCaml.dll"
                          "-a"; fn
-                         "-o"; Path.ChangeExtension(fn, ".dll")
+                         "-o"; dll
                       |]
     let errors, exitCode = 
         checker.Compile(checkerArgs)

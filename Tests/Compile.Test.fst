@@ -4,8 +4,8 @@ open Zen.Types
 open Zen.ErrorT
 open Zen.Cost
 
-val main : inputMsg -> cost (result transactionSkeleton) 1
-let main inputMsg = failw "Not Implemented"
+val main : transactionSkeleton -> cost (result transactionSkeleton) 1
+let main transactionSkeleton = failw "Not Implemented"
 
-val cf : inputMsg -> cost nat 1
+val cf : transactionSkeleton -> cost nat 1
 let cf _ = ret 1

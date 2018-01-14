@@ -10,7 +10,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>ZFS_SDK</RootNamespace>
     <AssemblyName>ZFS_SDK</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <DocumentationFile>bin\$(Configuration)\$(AssemblyName).xml</DocumentationFile>
     <Name>ZFS_SDK</Name>
@@ -38,17 +38,14 @@
     <Reference Include="basic, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\basic.dll</HintPath>
     </Reference>
+    <Reference Include="basic, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\ZFStar\tools\basic.dll</HintPath>
+    </Reference>
     <Reference Include="Consensus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\Consensus.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Compatibility.OCaml, Version=0.1.12.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\ZFS-Tools\bin\Debug\FSharp.Compatibility.OCaml.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharpx.Collections, Version=1.17.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\ZFS-Tools\bin\Debug\FSharpx.Collections.dll</HintPath>
-    </Reference>
-    <Reference Include="FSharpx.Extras, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\ZFS-Tools\bin\Debug\FSharpx.Extras.dll</HintPath>
+      <HintPath>packages\ZFStar\tools\FSharp.Compatibility.OCaml.dll</HintPath>
     </Reference>
     <Reference Include="Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Infrastructure\bin\Debug\Infrastructure.dll</HintPath>
@@ -57,20 +54,17 @@
     <Reference Include="parser, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\parser.dll</HintPath>
     </Reference>
+    <Reference Include="parser, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\ZFStar\tools\parser.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Reflection.Metadata, Version=1.4.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\packages\System.Reflection.Metadata\lib\netstandard1.1\System.Reflection.Metadata.dll</HintPath>
-    </Reference>
     <Reference Include="Zen.FSharp.Compiler.Service, Version=13.0.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Infrastructure\bin\Debug\Zen.FSharp.Compiler.Service.dll</HintPath>
     </Reference>
     <Reference Include="Zen.FSharp.Compiler.Service, Version=13.0.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\Zen.FSharp.Compiler.Service.dll</HintPath>
-    </Reference>
-    <Reference Include="ZFS_Tools, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\ZFS-Tools\bin\Debug\ZFS_Tools.dll</HintPath>
     </Reference>
     <Reference Include="Zulib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Zulib\bin\Zulib.dll</HintPath>
@@ -90,9 +84,6 @@
     <None Include="Tests\simpleTxSkel.fsx" />
     <None Include="Tests\testContract.fsx" />
   </ItemGroup>
-  <PropertyGroup>
-    <FSharpTargetsPath>.\packages\FSharp.Compiler.Tools.4.1.23\tools\Microsoft.FSharp.Targets</FSharpTargetsPath>
-  </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
@@ -200,7 +191,17 @@
       </ItemGroup>
     </When>
   </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">
+      <ItemGroup>
+        <Reference Include="ZFS_Tools">
+          <HintPath>packages\ZFS-Tools\lib\ZFS_Tools.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <Import Project="packages\NETStandard.Library\build\NETStandard.Library.targets" Condition="Exists('packages\NETStandard.Library\build\NETStandard.Library.targets')" Label="Paket" />
   <Import Project="packages\zen_z3_osx\build\$(__paket__zen_z3_osx_targets).targets" Condition="Exists('packages\zen_z3_osx\build\$(__paket__zen_z3_osx_targets).targets')" Label="Paket" />
-  <Import Project="packages\ZFS-Tools\build\ZFS-Tools.targets" Condition="Exists('packages\ZFS-Tools\build\ZFS-Tools.targets')" Label="Paket" />
 </Project>

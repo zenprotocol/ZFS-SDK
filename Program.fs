@@ -46,6 +46,7 @@ let usage =
         -v                      Verify the source file
         -x                      Extract the source file
         -c                      Compile from source file
+        -g                      Generate a .fsx file to test the contract with
     """
 let showUsage() : unit =
     printfn "%s" usage

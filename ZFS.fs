@@ -77,8 +77,7 @@ let compile (fn:string) =
                          "-r"; "Zulib.dll"
                          "-r"; "FSharp.Compatibility.OCaml.dll"
                          "-a"; fn
-                         "-o"; dll
-                      |]
+                         "-o"; dll |]
     let errors, exitCode = 
         checker.Compile(checkerArgs)
         |> Async.RunSynchronously

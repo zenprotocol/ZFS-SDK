@@ -2,8 +2,8 @@ GENERATE-LOAD-SCRIPTS: ON
 RESTRICTION: == net462
 NUGET
   remote: https://www.nuget.org/api/v2
-    Argu (4.2.1)
-      FSharp.Core (>= 3.1.2)
+    Argu (5.0)
+      FSharp.Core (>= 4.0.0.1)
     AsyncIO (0.1.40)
     Baseclass.Contrib.Nuget.Output (2.4.1)
     BouncyCastle (1.8.1)
@@ -35,7 +35,7 @@ NUGET
     FsNetMQ (0.2.7)
       FSharp.Core
       NetMQ (>= 4.0.0.156-pre)
-    FsPickler (5.0)
+    FsPickler (5.1)
       FSharp.Core (>= 3.1.2)
     FsUnit (3.0)
       FSharp.Core (>= 3.1.2.5)
@@ -75,4 +75,4 @@ NUGET
     ZFStar (0.0.5)
 GIT
   remote: git@gitlab.com:zenprotocol/zenprotocol.git
-     (84b7c72ad47bd0a9e1bc6ac0c8a4c71aadde76ce)
+     (1bb24d06c43da975816e253c2e90d02528f79fcd)

@@ -6,7 +6,7 @@ framework: 462
 nuget FSharp.Compiler.Tools 4.1.23 restriction: >= net45
 nuget FSharp.Core 4.1.18 restriction: >= net45
 nuget System.ValueTuple 4.3.0 restriction: >= net45
-nuget ZFS-Tools
+nuget ZFS-Tools >= 0.0.6
 nuget FSharpx.Extras
 nuget FsNetMQ
 nuget FsPickler

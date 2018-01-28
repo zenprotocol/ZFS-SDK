@@ -38,11 +38,18 @@
     <Reference Include="basic, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\basic.dll</HintPath>
     </Reference>
+    <Reference Include="basic, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\ZFStar\tools\basic.dll</HintPath>
+    </Reference>
     <Reference Include="Consensus, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\Consensus.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Compatibility.OCaml, Version=0.1.12.0, Culture=neutral, PublicKeyToken=null">
+<<<<<<< HEAD
       <HintPath>..\ZFS-Tools\bin\Debug\FSharp.Compatibility.OCaml.dll</HintPath>
+=======
+      <HintPath>packages\ZFStar\tools\FSharp.Compatibility.OCaml.dll</HintPath>
+>>>>>>> 87f7cb1cc361509adea280eeb7217139460d78e8
     </Reference>
     <Reference Include="Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Infrastructure\bin\Debug\Infrastructure.dll</HintPath>
@@ -50,6 +57,9 @@
     <Reference Include="mscorlib" />
     <Reference Include="parser, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\ZFS-Tools\bin\Debug\parser.dll</HintPath>
+    </Reference>
+    <Reference Include="parser, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>packages\ZFStar\tools\parser.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -79,9 +89,6 @@
     <None Include="Tests\simpleTxSkel.fsx" />
     <None Include="Tests\testContract.fsx" />
   </ItemGroup>
-  <PropertyGroup>
-    <FSharpTargetsPath>.\packages\FSharp.Compiler.Tools.4.1.23\tools\Microsoft.FSharp.Targets</FSharpTargetsPath>
-  </PropertyGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.6.2'">

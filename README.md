@@ -8,7 +8,6 @@
 2. Run the following command. Note that this could take a few minutes.
     ```
     cd ZFS-SDK
-    chmod +x build.sh
-    .paket/paket.exe install
+    ./paket install
     ./build.sh
     ```   

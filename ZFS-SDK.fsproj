@@ -45,11 +45,7 @@
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Consensus\bin\Debug\Consensus.dll</HintPath>
     </Reference>
     <Reference Include="FSharp.Compatibility.OCaml, Version=0.1.12.0, Culture=neutral, PublicKeyToken=null">
-<<<<<<< HEAD
-      <HintPath>..\ZFS-Tools\bin\Debug\FSharp.Compatibility.OCaml.dll</HintPath>
-=======
       <HintPath>packages\ZFStar\tools\FSharp.Compatibility.OCaml.dll</HintPath>
->>>>>>> 87f7cb1cc361509adea280eeb7217139460d78e8
     </Reference>
     <Reference Include="Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>paket-files\gitlab.com\zenprotocol\zenprotocol\src\Infrastructure\bin\Debug\Infrastructure.dll</HintPath>

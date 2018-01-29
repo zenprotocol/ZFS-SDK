@@ -3,6 +3,8 @@ open System.IO
 open System.Text
 open Microsoft.FSharp.Compiler.Interactive.Shell
 
+open Zen.Types.TxSkeleton
+
 // returns the path for the folder containing the specified file. 
 let getDir : string -> string =
     Path.GetFullPath >> Path.GetDirectoryName
@@ -19,7 +21,7 @@ let elab_file (filepath:string) : unit =
     ASTUtils.write_ast_to_file ast elaboratedFilePath
     printfn "Wrote elaborated source to %s" elaboratedFilePath
 
-let run_fsx (fsxFile : string) : Zen.Types.Extracted.transactionSkeleton =
+let run_fsx (fsxFile : string) : txSkeleton =
     let inStream = new StringReader("")
     let defaultArgs = [|"fsi.exe";"--noninteractive";"--nologo";"--gui-" |]
     let fsiConfig = FsiEvaluationSession.GetDefaultConfiguration()

@@ -1,9 +1,9 @@
 generate_load_scripts: true
-source https://www.nuget.org/api/v2
 
+source https://www.nuget.org/api/v2
 framework: 462
 
-nuget FSharp.Compiler.Tools 4.1.23 restriction: >= net45
+nuget FSharp.Compiler.Tools
 nuget FSharp.Core 4.1.18 restriction: >= net45
 nuget System.ValueTuple 4.3.0 restriction: >= net45
 nuget ZFS-Tools >= 0.0.6
@@ -28,4 +28,10 @@ nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
 nuget System.Reflection.Metadata 1.4.2
 
-git git@gitlab.com:zenprotocol/zenprotocol.git
+source https://www.myget.org/f/zenprotocol
+framework: 462
+
+nuget Zulib
+nuget Infrastructure 0.0.1
+nuget Consensus
+

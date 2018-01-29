@@ -1,8 +1,8 @@
 module ZFS
 
+open Infrastructure
 open System
 open System.IO
-open Infrastructure
 open FSharpx.String
 
 open Microsoft.FSharp.Compiler.SourceCodeServices

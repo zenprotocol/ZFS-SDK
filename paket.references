@@ -6,5 +6,8 @@ FSharpx.Extras
 Zen.FSharp.Compiler.Service
 System.Reflection.Metadata
 FsBech32
+Consensus
+Infrastructure
+Zulib
 
 zen_z3_osx

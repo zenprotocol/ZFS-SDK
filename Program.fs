@@ -3,7 +3,8 @@ open System.IO
 open System.Text
 open Microsoft.FSharp.Compiler.Interactive.Shell
 
-open Zen.Types.TxSkeleton
+open Zen.TxSkeleton
+open Zen.Types.Realized
 
 // returns the path for the folder containing the specified file. 
 let getDir : string -> string =
@@ -28,12 +29,12 @@ let run_fsx (fsxFile : string) : txSkeleton =
     let fsiSession = FsiEvaluationSession.Create(fsiConfig, defaultArgs, inStream, stdout, stderr) 
     let fsx = File.ReadAllText fsxFile
     match fsiSession.EvalExpression fsx with
-    | None -> 
+    | None ->
         failwithf "No result when running %s" fsxFile
     | Some value -> 
         value.ReflectionValue |> unbox<Consensus.TxSkeleton.TxSkeleton>
                               |> Consensus.ZFStar.convertInput
-    
+
 let usage =
     """
     USAGE: ZFS_SDK.exe --help

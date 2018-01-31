@@ -4,9 +4,7 @@ open System.IO
 module String = FSharpx.String
 
 let generate (sourceFilePath : string) : array<string> =
-    let contractModuleName = 
-        let noDllExtension = sourceFilePath.Remove(sourceFilePath.Length-4)
-        noDllExtension.Remove(0, 7)
+    let contractModuleName = sourceFilePath.Substring(7, sourceFilePath.Length-11)
     [| sprintf "#r \"%s\"" sourceFilePath
        ""
        sprintf "open %s" contractModuleName

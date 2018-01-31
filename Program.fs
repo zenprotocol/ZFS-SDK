@@ -20,7 +20,7 @@ let elab_file (filepath:string) : unit =
                        |> ASTUtils.elab_ast
                        |> ASTUtils.add_main_to_ast
     ASTUtils.write_ast_to_file ast elaboratedFilePath
-    printfn "Wrote elaborated source to %s" elaboratedFilePath
+    printfn "Wrote elaboratled source to %s" elaboratedFilePath
 
 let run_fsx (fsxFile : string) : txSkeleton =
     let inStream = new StringReader("")

@@ -31,7 +31,7 @@ nuget System.Reflection.Metadata 1.4.2
 source https://www.myget.org/f/zenprotocol
 framework: 462
 
-nuget Zulib
+nuget Zulib >= 0.0.1.3
 nuget Infrastructure >= 0.0.1.2
 nuget Consensus >= 0.0.1.2
 

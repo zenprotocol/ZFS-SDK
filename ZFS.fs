@@ -24,12 +24,10 @@ let run_zfs (fn:string) (args : list<string>) : unit =
     Platform.run zfs_exe
         ([ Path.GetFullPath fn
            "--smt";     z3 
-           "--prims";   "../../paket-files/gitlab.com/zenprotocol/zenprotocol/src/Zulib/fstar/prims.fst"
-           "--include"; "../../paket-files/gitlab.com/zenprotocol/zenprotocol/src/Zulib/fstar"
-           "--use_hints"
-           "--use_hint_hashes"
+           "--prims";   "../../packages/Zulib/output/Zulib/prims.fst"
+           "--include"; "../../packages/Zulib/output/Zulib/"
            "--record_hints"
-           "--cache_checked_modules"
+           //"--cache_checked_modules"
            "--no_default_includes" 
          ] @ args)
     |> function | Ok _ -> ()

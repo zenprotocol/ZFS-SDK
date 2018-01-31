@@ -10,10 +10,10 @@
     cd ZFS-SDK
     ./paket install
     ./build.sh
-    ln -s  bin/Release/ZFS_SDK.exe ZFS_SDK.exe
     ```   
 
-# Usage
+## Usage
+
     ```
     USAGE: ZFS_SDK.exe --help
            ZFS_SDK.exe <source file path> [< option >]

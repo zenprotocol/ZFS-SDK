@@ -62,6 +62,7 @@
     <Content Include="Tests\Elab.Test.fst" />
     <Content Include="Tests\Extract.Test.fst" />
     <Content Include="Tests\Run.Test.fst" />
+    <Content Include="Tests\Token.fst" />
     <Content Include="Tests\Verify.Test.fst" />
     <None Include="App.config" />
     <None Include="Tests\simpleTxSkel.fsx" />

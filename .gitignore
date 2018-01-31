@@ -11,3 +11,5 @@ paket-files
 *.nupkg
 
 Tests/Elaborated
+Tests/fs
+Tests/bin

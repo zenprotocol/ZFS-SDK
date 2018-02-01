@@ -47,7 +47,7 @@ let run (fsxFile : string) : unit =
             then ()
             else failwithf "%s" <| p.StandardError.ReadToEnd()
         else 
-            failwith "failed to run fsx"
+            failwith "failed to start fsx"
     with _ as ex ->
-        failwithf "failed to start fsx: \n%s" <| ex.ToString()
+        failwithf "failed to run fsx: \n%s" <| ex.ToString()
     

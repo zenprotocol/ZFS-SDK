@@ -6,6 +6,7 @@ packages
 .paket/paket.exe
 .paket/paket.targets
 .paket/Paket.Restore.targets
+.paket/load
 paket-files
 
 *.nupkg

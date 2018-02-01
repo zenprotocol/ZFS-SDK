@@ -74,7 +74,7 @@ NUGET
     ZFS-Tools (0.0.8)
     ZFStar (0.0.5)
   remote: https://www.myget.org/f/zenprotocol
-    Consensus (0.0.1.2)
+    Consensus (0.0.1.4)
       BouncyCastle
       FsBech32 (>= 0.1.0.7)
       FSharp.Compatibility.OCaml

@@ -1,6 +1,7 @@
 ﻿
 open System.IO
 open Utils
+open Consensus
 
 let usage =
     """
@@ -57,10 +58,10 @@ let rec main argv =
             
         | "-g" | "--generate-fsx" ->
             let dllPath =
-                let dllFile = Path.ChangeExtension(Path.GetFileName sourceFilePath, ".dll")
-                "../bin"/dllFile
-            let template = Fsx.generate dllPath
-            let fsxFile = getDir sourceFilePath/"fs"/"TestContract.fsx"
+                "../bin"/Path.ChangeExtension(Path.GetFileName sourceFilePath, ".dll")
+            let contractModuleName = contractModuleName sourceFilePath
+            let template = Fsx.generate sourceFilePath
+            let fsxFile = getDir sourceFilePath/"fs"/sprintf "%s.Test.fsx" contractModuleName
             File.WriteAllLines(fsxFile, template)
             printfn "Generated %s" fsxFile
             

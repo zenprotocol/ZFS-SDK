@@ -3,6 +3,7 @@ module Utils
 
 open System.IO
 open Infrastructure
+module String = FSharpx.String
 
 let (/) path1 path2 = Path.Combine(path1, path2)
 
@@ -11,3 +12,11 @@ let getDir : string -> string =
     Path.GetFullPath >> Path.GetDirectoryName
     
 let expandPath = (/) Platform.getFrameworkPath
+
+let contractModuleName sourceFilePath =
+    sourceFilePath
+    |> String.splitChar [|'/'|]
+    |> Array.last
+    |> String.splitChar [|'.'|]
+    |> fun arr -> arr.[..(arr.Length - 2)]
+    |> String.concat "."

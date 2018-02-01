@@ -2,16 +2,41 @@
 module Fsx
 
 open System
+open System.IO
 open System.Diagnostics
+open Consensus
 open Utils
 
 let generate (sourceFilePath : string) : array<string> =
-    let contractModuleName = sourceFilePath.Substring(7, sourceFilePath.Length-11)
-    [| sprintf "#r \"%s\"" sourceFilePath
+    let dllPath =
+                    "../bin"/Path.ChangeExtension(Path.GetFileName sourceFilePath, ".dll")
+    let contractModuleName = contractModuleName sourceFilePath
+    let contractHash = getDir sourceFilePath/"Elaborated"/sprintf "%s.fst" contractModuleName
+                       |> File.ReadAllText
+                       |> Contract.computeHash
+                       |> string
+    [| sprintf "#r \"%s\"" dllPath
        ""
+       "open System.IO"
+       "open Consensus"
+       "open Consensus.Hash"
+       "open Consensus.Types"
        sprintf "open %s" contractModuleName
        ""
-       "let mainFunction = mainFunction"
+       "let f = ZFStar.vectorLength"
+       "// Convert the mainFunction from ZF* to F#"
+       "let mainFunction = mainFunction |> ZFStar.fstTofsMainFunction"
+       ""
+       "// Contract Arguments"
+       "let txSkeleton = TxSkeleton.empty"
+       "let command = \"\""
+       "let inputWallet : list<PointedOutput> = []"
+       sprintf "let contractHash : Hash = Hash \"%s\"B " contractHash;
+       ""
+       "// Run the contract on it's arguments and obtain the result"
+       "let result = mainFunction txSkeleton contractHash command inputWallet"
+       ""
+       "printfn \"%A\" result"
        ""
        sprintf "printfn \"Hello World, I am a test for the %s contract!\"" contractModuleName
     |]

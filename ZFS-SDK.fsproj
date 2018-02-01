@@ -54,7 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="TemplateFSX.fs" />
+    <Compile Include="Utils.fs" />
+    <Compile Include="Fsx.fs" />
     <Compile Include="ZFS.fs" />
     <Compile Include="Program.fs" />
     <Content Include="paket.references" />
@@ -65,8 +66,6 @@
     <Content Include="Tests\Token.fst" />
     <Content Include="Tests\Verify.Test.fst" />
     <None Include="App.config" />
-    <None Include="Tests\simpleTxSkel.fsx" />
-    <None Include="Tests\testContract.fsx" />
   </ItemGroup>
   <Import Project="$(FSharpTargetsPath)" Condition="Exists('$(FSharpTargetsPath)')" />
   <Choose>

@@ -1,14 +1,20 @@
 module ZFS
 
-open Infrastructure
 open System
 open System.IO
-open FSharpx.String
-
 open Microsoft.FSharp.Compiler.SourceCodeServices
+open Infrastructure
+open Utils
 
-let private (/) a b = Path.Combine (a,b)
-let private expandPath = (/) Platform.getFrameworkPath
+let elab_file (filepath:string) : unit =
+    let elaboratedDir = getDir filepath/"Elaborated"
+    Directory.CreateDirectory elaboratedDir |> ignore
+    let elaboratedFilePath = elaboratedDir/Path.GetFileName filepath
+    let ast = filepath |> ASTUtils.parse_file
+                       |> ASTUtils.elab_ast
+                       |> ASTUtils.add_main_to_ast
+    ASTUtils.write_ast_to_file ast elaboratedFilePath
+    printfn "Wrote elaboratled source to %s" elaboratedFilePath
 
 (* gets the path to z3 for the system *)
 let choose_z3 () : string =
@@ -39,8 +45,8 @@ let verify (fn:string) : unit =
 let extract (fn:string) : unit =
     let odir =
         let dir = fn |> Path.GetFullPath 
-                             |> Path.GetDirectoryName
-                             |> Directory.GetParent
+                     |> Path.GetDirectoryName
+                     |> Directory.GetParent
         dir.FullName/"fs"
   
     let module_name = ASTUtils.parse_file fn |> ASTUtils.get_module_name_str
@@ -79,8 +85,8 @@ let compile (fn:string) =
     let errors, exitCode = 
         checker.Compile(checkerArgs)
         |> Async.RunSynchronously
-    if exitCode = 0 then () 
+    if exitCode = 0 then ()
     else 
-        let errors = errors |> Array.map(fun e -> e.ToString()) |> String.concat " "
+        let errors = errors |> Array.map string |> String.concat " "
         failwithf "Compile Errors: %s" errors
         

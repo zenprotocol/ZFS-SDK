@@ -10,12 +10,17 @@ let elab_file (filepath:string) : unit =
     let elaboratedDir = getDir filepath/"Elaborated"
     Directory.CreateDirectory elaboratedDir |> ignore
     let elaboratedFilePath = elaboratedDir/Path.GetFileName filepath
-    let ast = filepath |> ASTUtils.parse_file
-                       |> ASTUtils.elab_ast
-                       |> ASTUtils.add_main_to_ast
-    ASTUtils.write_ast_to_file ast elaboratedFilePath
-    printfn "Wrote elaboratled source to %s" elaboratedFilePath
-
+    try 
+        filepath |> ASTUtils.parse_file
+                 |> ASTUtils.elab_ast
+                 |> ASTUtils.add_main_to_ast
+                 |> Ok
+    with _ as e ->
+        Error e
+    |> function | Ok ast -> ASTUtils.write_ast_to_file ast elaboratedFilePath
+                            printfn "Wrote elaboratled source to %s" elaboratedFilePath
+                | Error e -> printfn "Elaborator error: %A" e
+            
 (* gets the path to z3 for the system *)
 let choose_z3 () : string =
     match Environment.OSVersion.Platform with

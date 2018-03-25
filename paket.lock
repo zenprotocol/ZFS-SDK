@@ -40,6 +40,8 @@ NUGET
     FsUnit (3.0)
       FSharp.Core (>= 3.1.2.5)
       NUnit (>= 3.6)
+    Infrastructure (1.0.0.3)
+      Infrastructure (>= 1.0.0.1)
     Microsoft.NETCore.Platforms (2.0.1)
     NetMQ (4.0.0.156-pre)
       AsyncIO (>= 0.1.40)
@@ -72,7 +74,7 @@ NUGET
     zen_z3_linux (4.5.1.7-v1f29cebd4df)
     zen_z3_osx (4.5.1.7-v1f29cebd4df6)
     ZFS-Tools (0.0.8)
-    ZFStar (0.0.5)
+    ZFStar (0.0.9)
   remote: https://www.myget.org/f/zenprotocol
     Consensus (0.0.1.4)
       BouncyCastle
@@ -83,16 +85,4 @@ NUGET
       FsPickler
       Infrastructure (>= 0.0.1.2)
       Zulib (>= 0.0.1)
-    Infrastructure (0.0.1.2)
-      FSharp.Compiler.Tools (>= 4.1.29)
-      FSharp.Control.Reactive
-      FSharp.Core
-      FSharp.Data
-      FSharpx.Extras
-      FsNetMQ (>= 0.2.7)
-      FsPickler
-      System.Reactive.Linq
-      Zen.FSharp.Compiler.Service (17.0.2)
-      ZFS-Tools
-      ZFStar (0.0.5)
     Zulib (0.0.1.3)

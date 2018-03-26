@@ -1,7 +1,7 @@
 generate_load_scripts: true
 
 source https://www.nuget.org/api/v2
-framework: 462
+framework: 47
 
 nuget FSharp.Compiler.Tools
 nuget FSharp.Core 4.1.18 restriction: >= net45
@@ -29,8 +29,8 @@ nuget FSharp.Compatibility.OCaml
 nuget System.Reflection.Metadata 1.4.2
 
 source https://www.myget.org/f/zenprotocol
-framework: 462
+framework: 47
 
-nuget Zulib >= 0.0.1.3
-nuget Infrastructure >= 0.0.1.2
-nuget Consensus >= 0.0.1.4
+nuget Zulib >= 0.0.1.4
+nuget Infrastructure = 0.0.1.3
+nuget Consensus >= 0.0.1.5

@@ -2,19 +2,12 @@ GENERATE-LOAD-SCRIPTS: ON
 RESTRICTION: == net47
 NUGET
   remote: https://www.nuget.org/api/v2
-    Argu (5.1)
-      FSharp.Core (>= 4.0.0.1)
     AsyncIO (0.1.40)
     Baseclass.Contrib.Nuget.Output (2.4.1)
     BouncyCastle (1.8.1)
     FsBech32 (0.1.0.7)
       FSharp.Compiler.Tools
       FSharp.Core
-    FsCheck (2.10.8)
-      FSharp.Core (>= 4.0.0.1)
-    FsCheck.NUnit (2.10.8)
-      FsCheck (2.10.8)
-      NUnit (>= 3.8.1 < 4.0)
     FSharp.Compatibility.OCaml (0.1.13)
     FSharp.Compiler.Tools (10.0.1)
     FSharp.Configuration (1.4)
@@ -37,15 +30,11 @@ NUGET
       NetMQ (>= 4.0.0.156-pre)
     FsPickler (5.2)
       FSharp.Core (>= 3.1.2)
-    FsUnit (3.0)
-      FSharp.Core (>= 3.1.2.5)
-      NUnit (>= 3.6)
     Microsoft.NETCore.Platforms (2.0.1)
     NetMQ (4.0.0.156-pre)
       AsyncIO (>= 0.1.40)
     NETStandard.Library (2.0.1)
       Microsoft.NETCore.Platforms (>= 1.1)
-    NUnit (3.10.1)
     System.Collections.Immutable (1.4)
       NETStandard.Library (>= 1.6.1)
     System.Reactive (3.1.1)

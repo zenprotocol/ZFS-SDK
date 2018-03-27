@@ -1,76 +1,70 @@
-﻿
-open System.IO
+﻿open System.IO
 open Utils
-open Consensus
+open ZFS
 
-let usage =
-    """
-    USAGE: ZFS_SDK.exe --help
-           ZFS_SDK.exe [< option >] <source file path>
-    
-    PARAMS:
-        <source file path>      The ZF* source file to use
-    
-    OPTIONS:
-        --help, -h              Display this list of options
-        --elaborate, -e         Elaborate The source File
-        --verify, -v            Verify the source file
-        --extract, -x           Extract the source file
-        --compile, -c           Compile from source file
-        --generate-fsx, -g      Generate a .fsx file to test the contract with
-        --run-fsx, -r           Run the given .fsx file, automatically loading Zen dlls.
-    """
-let showUsage() : unit =
+let usage = """
+USAGE: ZFS_SDK.exe [< option >] <source file>
+
+PARAMS:
+    <source file>      The ZF* source file to use
+
+OPTIONS:
+    --elaborate, -e         Elaborate The source File
+    --verify, -v            Verify the source file
+    --extract, -x           Extract the source file
+    --compile, -c           Compile from source file
+    --generate-fsx, -g      Generate a .fsx file to test the contract with
+    --run-fsx, -r           Run the given .fsx file, automatically loading Zen dlls.
+"""
+
+
+let showUsage() =
     printfn "%s" usage
-   
+
+let expected extension filePath = 
+    if Path.GetExtension(filePath) <> extension then
+        log "Expected %s extension" extension
+        false
+    else if not <| File.Exists filePath then
+        log "File not found: %s" filePath
+        false
+    else
+        true
+        
 [<EntryPoint>]
-let rec main argv =
-    match argv with
-    | [| "-h" |] 
-    | [| "--help" |]-> 
-        showUsage()
-    
-    | [| _ |] -> 
-        showUsage()
-    
-    | [| option; sourceFilePath|] ->
+let main = function
+    | [| option; filePath |] ->
         match option with
-        | "-e" | "--elaborate" -> 
-            ZFS.elab_file sourceFilePath
-        
-        | "-v" | "--verify" -> 
-            ZFS.elab_file sourceFilePath
-            let elaboratedDir = getDir sourceFilePath/"Elaborated"
-            let elaboratedFilePath = elaboratedDir/Path.GetFileName sourceFilePath
-            ZFS.verify elaboratedFilePath
-        
-        | "-x" | "--extract" -> 
-            ZFS.elab_file sourceFilePath       
-            let elaboratedDir = getDir sourceFilePath/"Elaborated"
-            let elaboratedFilePath = elaboratedDir/Path.GetFileName sourceFilePath
-            ZFS.extract elaboratedFilePath
-        
-        | "-c" | "--compile" -> 
-            main [| "-x"; sourceFilePath |] |> ignore
-            let outputFile = Path.ChangeExtension(Path.GetFileName sourceFilePath, ".fs")
-            let outputFilePath = getDir sourceFilePath/"fs"/outputFile
-            ZFS.compile outputFilePath
+        | "-e" | "--elaborate" when expected ".fst" filePath -> 
+            ZFS.elab_file filePath
+
+        | "-v" | "--verify" when expected ".fst" filePath -> 
+            ZFS.elab_file filePath
+            >>= ZFS.verify
+
+        | "-x" | "--extract" when expected ".fst" filePath -> 
+            ZFS.elab_file filePath
+            >>= ZFS.extract 
+
+        | "-c" | "--compile" when expected ".fst" filePath -> 
+            ZFS.elab_file filePath
+            >>= ZFS.extract 
+            >>= ZFS.compile
+
+        | "-g" | "--generate-fsx" when expected ".fst" filePath ->
+            Fsx.generate filePath
             
-        | "-g" | "--generate-fsx" ->
-            let dllPath =
-                "../bin"/Path.ChangeExtension(Path.GetFileName sourceFilePath, ".dll")
-            let contractModuleName = contractModuleName sourceFilePath
-            let template = Fsx.generate sourceFilePath
-            let fsxFile = getDir sourceFilePath/"fs"/sprintf "%s.Test.fsx" contractModuleName
-            File.WriteAllLines(fsxFile, template)
-            printfn "Generated %s" fsxFile
-            
-        | "-r" | "--run-fsx" ->
-            Fsx.run sourceFilePath
-        
+        | "-r" | "--run-fsx" when expected ".fsx" filePath ->
+            Fsx.run filePath
+
         | _ ->
-            showUsage()
+            Error ""
+        |> function
+        | Error error -> 
+            if error <> "" then log "Error: %A" error
+            1
+        | Ok _ ->
+            0
     | _ ->
         showUsage()
-    
-    0 // return an integer exit code
+        0

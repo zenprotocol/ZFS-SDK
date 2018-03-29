@@ -1,35 +1,33 @@
 module ZFS
 
+open FStar.Parser.AST
 open System
 open System.IO
 open Microsoft.FSharp.Compiler.SourceCodeServices
 open Infrastructure
 open Utils
 
-let elab_file (filepath:string) : unit =
-    let elaboratedDir = getDir filepath/"Elaborated"
-    Directory.CreateDirectory elaboratedDir |> ignore
-    let elaboratedFilePath = elaboratedDir/Path.GetFileName filepath
+let elab_file (filepath:string) =
+    log "Elaborating %s ..." (Path.GetFileName(filepath))
+    let code = File.ReadAllText filepath
+    let moduleName = getModuleName code
+    let elaboratedFilePath = (getDir filepath) / moduleName |> changeExtension ".fst"
+    let filepath = changeExtension ".source.fst" filepath
+    File.WriteAllText(filepath, sprintf "module %s\n%s" moduleName code)
+
     try 
         filepath |> ASTUtils.parse_file
                  |> ASTUtils.elab_ast
                  |> ASTUtils.add_main_to_ast
                  |> Ok
     with _ as e ->
-        Error e
-    |> function | Ok ast -> ASTUtils.write_ast_to_file ast elaboratedFilePath
-                            printfn "Wrote elaboratled source to %s" elaboratedFilePath
-                | Error e -> printfn "Elaborator error: %A" e
-            
-(* gets the path to z3 for the system *)
-let choose_z3 () : string =
-    match Environment.OSVersion.Platform with
-    | PlatformID.MacOSX -> "../../packages/zen_z3_osx/output/z3"
-    | PlatformID.Unix   -> "../../packages/zen_z3_linux/output/z3"
-    | PlatformID.Win32NT -> failwith "No z3 version for Windows"
-    | _ -> failwith "OS not supported"
+        Error (sprintf "%A" e)
+    |> Result.map (fun ast -> 
+        ASTUtils.write_ast_to_file ast elaboratedFilePath
+        log "Wrote elaborated source to %s" (Path.GetFileName(elaboratedFilePath))
+        elaboratedFilePath)
 
-let run_zfs (fn:string) (args : list<string>) : unit =
+let run_zfs (fn:string) (args : list<string>) =
     let zfs_exe = "../../packages/ZFStar/tools/fstar.exe"
     let z3 = choose_z3()
     Platform.run zfs_exe
@@ -41,38 +39,34 @@ let run_zfs (fn:string) (args : list<string>) : unit =
            //"--cache_checked_modules"
            "--no_default_includes" 
          ] @ args)
-    |> function | Ok _ -> ()
-                | Error e -> printfn "Error: %s" e
     
-let verify (fn:string) : unit =
+let verify (fn:string) =
     run_zfs fn []
+    |> Result.map (fun _ -> 
+        log "Verified"
+        "")
     
-let extract (fn:string) : unit =
-    let odir =
-        let dir = fn |> Path.GetFullPath 
-                     |> Path.GetDirectoryName
-                     |> Directory.GetParent
-        dir.FullName/"fs"
-  
+let extract (fn:string) =
+    log "Extracting %s ..." (Path.GetFileName(fn))
+    let odir = getDir fn
     let module_name = ASTUtils.parse_file fn |> ASTUtils.get_module_name_str
     Directory.CreateDirectory odir |> ignore
     run_zfs fn 
         [ "--codegen"; "FSharp"
           "--odir"; odir 
           "--extract_module"; module_name ]
-
+    |> Result.map (fun _ ->
+        let fn = changeExtension ".fs" fn 
+        log "Wrote extracted file to %s" (Path.GetFileName(fn))
+        fn)
 
 let compile (fn:string) =
-    let odir =
-        let dir = fn |> Path.GetFullPath 
-                     |> Path.GetDirectoryName
-                     |> Directory.GetParent
-        dir.FullName/"bin"
-    
+    log "Compiling %s ..." (Path.GetFileName(fn))
+    let odir = getDir fn 
     Directory.CreateDirectory odir |> ignore
     
     let dll =
-        Path.ChangeExtension((odir / Path.GetFileName fn), ".dll")   
+        changeExtension ".dll" (odir / Path.GetFileName fn)
     
     let checker = FSharpChecker.Create()
     let checkerArgs = [| "fsc.exe"
@@ -90,8 +84,10 @@ let compile (fn:string) =
     let errors, exitCode = 
         checker.Compile(checkerArgs)
         |> Async.RunSynchronously
-    if exitCode = 0 then ()
+    if exitCode = 0 then
+        log "Wrote compiled file to %s" (Path.GetFileName(dll))
+        Ok dll
     else 
         let errors = errors |> Array.map string |> String.concat " "
-        failwithf "Compile Errors: %s" errors
+        Error errors
         

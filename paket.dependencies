@@ -1,36 +1,30 @@
 generate_load_scripts: true
 
 source https://www.nuget.org/api/v2
-framework: 462
+framework: 47
 
 nuget FSharp.Compiler.Tools
 nuget FSharp.Core 4.1.18 restriction: >= net45
 nuget System.ValueTuple 4.3.0 restriction: >= net45
-nuget ZFS-Tools >= 0.0.6
+nuget ZFS-Tools >= 0.0.10
 nuget FSharpx.Extras
 nuget FsNetMQ
-nuget FsPickler
 nuget FSharp.Control.Reactive
 nuget FSharp.Data
 nuget Zen.FSharp.Compiler.Service
-nuget BouncyCastle
 nuget FsBech32
-nuget NUnit
-nuget FsUnit
-nuget FsCheck.NUnit
 nuget zen_z3_osx
 nuget zen_secp256k1_osx
 nuget zen_secp256k1_linux
 nuget zen_z3_linux
 nuget ZFStar = 0.0.9
-nuget Argu
 nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
 nuget System.Reflection.Metadata 1.4.2
 
 source https://www.myget.org/f/zenprotocol
-framework: 462
+framework: 47
 
-nuget Zulib >= 0.0.1.3
-nuget Infrastructure >= 0.0.1.2
-nuget Consensus >= 0.0.1.4
+nuget Zulib >= 0.0.1.4
+nuget Infrastructure = 0.0.1.3
+nuget Consensus >= 0.0.1.5

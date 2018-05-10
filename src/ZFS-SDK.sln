@@ -4,11 +4,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{6F3ADBB9-C0F7-4D7E-BBC9-E4F96F18F0EF}"
-	ProjectSection(SolutionItems) = preProject
-		paket.dependencies = paket.dependencies
-	EndProjectSection
+ProjectSection(SolutionItems) = preProject
+	..\paket.dependencies = ..\paket.dependencies
+	..\paket.lock = ..\paket.lock
+EndProjectSection
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ZFS_SDK", "ZFS-SDK.fsproj", "{EAF477F5-4A70-403B-8408-9247D87899CB}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ZFS_SDK", "ZFS-SDK\ZFS-SDK.fsproj", "{EAF477F5-4A70-403B-8408-9247D87899CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

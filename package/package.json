@@ -1,0 +1,9 @@
+{
+  "author":"Zebra",
+  "name":"@zen/zebra",
+  "version":"0.0.4",
+  "main":"index.js",
+  "bin": {
+    "zebra":"zebra.js"
+  }
+}

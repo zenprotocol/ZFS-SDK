@@ -1,0 +1,6 @@
+#!/bin/sh
+
+full_path=$(dirname "$0")
+zebra="$full_path/zebra.exe"
+
+mono $zebra $@

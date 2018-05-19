@@ -5,7 +5,7 @@
 You will need to have mono installed. Instructions for your OS can be found [here](http://www.mono-project.com/download/).
 For Linux, you will need either the `mono-devel` or `mono-complete` package. Do not install mono from your package manager - follow the instructions on the mono website.
 
-### Linux
+### Linux / OSX
 1. Clone this repo
 2. Run the following command. Note that this could take a few minutes.
     ```
@@ -13,17 +13,6 @@ For Linux, you will need either the `mono-devel` or `mono-complete` package. Do 
     ./paket install
     ./build.sh
     ```
-
-### OSX
-
-1. Clone this repo
-2. Run the following command. Note that this could take a few minutes.
-    ```
-    cd ZFS-SDK
-    mono paket install
-    ./build.sh
-    ```
-
 ## Usage
 ```
     USAGE: ZFS_SDK.exe --help

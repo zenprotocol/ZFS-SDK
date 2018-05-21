@@ -10,7 +10,7 @@ Run the following commands in the Terminal / Command Prompt:
 
 ```
 npm config set @zen:registry https://www.myget.org/F/zenprotocol/npm/
-npm install @zen/zen-wallet -g
+npm install @zen/zebra -g
 ```
 
 ## Usage

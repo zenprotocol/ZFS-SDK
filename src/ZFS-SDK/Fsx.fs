@@ -42,8 +42,8 @@ let buyTokenWithZen contractFn costFn =
     let data =
         Zen.Dictionary.add "returnAddress"B returnAddress Zen.Dictionary.empty
         |> Cost.__force
-        |> DataDict
         |> Dict
+        |> Collection
         |> Some
 
     // Transaction with one input
@@ -74,7 +74,7 @@ load "%s"
 
     let fsxFile = changeExtension ".fsx" fileName
     File.WriteAllText (fsxFile, tpl)
-    printfn "Generated. to run:\n/ZFS_SDK.exe -r %s" fsxFile
+    printfn "Generated. to run:\nzebra -r %s" fsxFile
     Ok ""
 
 let run (fsxFile : string) =

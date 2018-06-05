@@ -77,7 +77,7 @@ let redeem txSkeleton contractId returnAddress wallet =
   CR.ofOption "contract doesn't have enough zens to pay you" txSkeleton
 
 let main txSkeleton context contractId command sender data wallet =
-  let! returnAddress = data >!= tryCollection >?= tryDict >?= tryFind "returnAddress" >?= tryLock in
+  let! returnAddress = data >!= tryDict >?= tryFind "returnAddress" >?= tryLock in
 
   match returnAddress with
   | Some returnAddress ->
@@ -92,7 +92,7 @@ let main txSkeleton context contractId command sender data wallet =
       RT.autoFailw "returnAddress is required"
 
 let cf _ _ _ _ _ wallet =
-    (2 + 2 + 64 + 2 + (64 + (64 + (64 + 64 + (Zen.Wallet.size wallet * 128 + 192) + 0)) + 25) + 33)
+    (4 + 64 + 2 + (64 + (64 + (64 + 64 + (Zen.Wallet.size wallet * 128 + 192) + 0)) + 25) + 31)
     |> cast nat
     |> ret"""           (filePath.Substring (0, filePath.Length - 4))
 

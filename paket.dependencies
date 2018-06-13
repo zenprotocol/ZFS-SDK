@@ -8,23 +8,16 @@ nuget FSharp.Core
 nuget System.ValueTuple
 nuget ZFS-Tools 0.0.19
 nuget FSharpx.Extras
-nuget FsNetMQ
-nuget FSharp.Control.Reactive
-nuget FSharp.Data
-nuget Zen.FSharp.Compiler.Service
-nuget FsBech32
 nuget ZFStar 0.0.19
 nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
-nuget System.Reflection.Metadata 1.4.2
-nuget NodaTime 1.3.2
 
 source https://www.myget.org/f/zenprotocol
 framework: 47
 
-nuget Zulib >= 0.3.17
-nuget Infrastructure = 0.3.17
-nuget Consensus >= 0.3.17
+nuget Zulib >= 0.3.23
+nuget Infrastructure = 0.3.23
+nuget Consensus >= 0.3.23
 nuget zen_secp256k1_osx
 nuget zen_secp256k1_linux
 nuget zen_z3_osx

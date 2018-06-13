@@ -37,7 +37,7 @@ let log format =
 
 (* gets the path to z3 for the system *)
 let choose_z3 () : string =
-    match Environment.OSVersion.Platform with
+    match Platform.platform with
     | PlatformID.MacOSX -> "z3-osx"
     | PlatformID.Unix   -> "z3-linux"
     | PlatformID.Win32NT -> "z3.exe"

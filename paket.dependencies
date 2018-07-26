@@ -6,18 +6,18 @@ framework: 47
 nuget FSharp.Compiler.Tools
 nuget FSharp.Core
 nuget System.ValueTuple
-nuget ZFS-Tools 0.0.19
+nuget ZFS-Tools 0.0.23
 nuget FSharpx.Extras
-nuget ZFStar 0.0.19
+nuget ZFStar 0.0.25
 nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
 
 source https://www.myget.org/f/zenprotocol
 framework: 47
 
-nuget Zulib >= 0.3.23
-nuget Infrastructure = 0.3.23
-nuget Consensus >= 0.3.23
+nuget Zulib 0.3.36
+nuget Infrastructure >= 0.9.4
+nuget Consensus >= 0.9.4
 nuget zen_secp256k1_osx
 nuget zen_secp256k1_linux
 nuget zen_z3_osx

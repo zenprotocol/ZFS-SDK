@@ -5,11 +5,14 @@ NUGET
     AsyncIO (0.1.40)
     Baseclass.Contrib.Nuget.Output (2.4.3)
     BouncyCastle (1.8.2)
+    FAKE (4.64.13)
     FParsec (1.0.3)
       FSharp.Core (>= 4.0.0.1)
     FsBech32 (0.1.0.7)
       FSharp.Compiler.Tools
       FSharp.Core
+    FsCheck (2.11)
+      FSharp.Core (>= 4.0.0.1)
     FSharp.Compatibility.OCaml (0.1.14)
       FSharp.Core (>= 4.3.4)
     FSharp.Compiler.Tools (10.0.2)
@@ -30,9 +33,9 @@ NUGET
     FSharpx.Extras (2.2.1)
       FSharpx.Async
       FSharpx.Collections
-    FsNetMQ (0.2.7)
+    FsNetMQ (0.2.8)
       FSharp.Core
-      NetMQ (>= 4.0.0.156-pre)
+      NetMQ (>= 4.0.0.175-pre)
     FsPickler (5.2)
       FSharp.Core (>= 3.1.2)
     Hopac (0.3.23)
@@ -43,11 +46,12 @@ NUGET
       Hopac (>= 0.3.23)
       NodaTime (>= 1.3.2)
     Microsoft.NETCore.Platforms (2.0.2)
-    NetMQ (4.0.0.156-pre)
+    NetMQ (4.0.0.175-pre)
       AsyncIO (>= 0.1.40)
     NETStandard.Library (2.0.3)
       Microsoft.NETCore.Platforms (>= 1.1)
     NodaTime (1.3.2)
+    NUnit (3.10.1)
     System.Collections.Immutable (1.4)
       NETStandard.Library (>= 1.6.1)
     System.Reactive (4.0)
@@ -87,36 +91,48 @@ NUGET
       System.Reflection.Metadata (>= 1.4.2)
     zen_secp256k1_linux (0.1.0.18)
       Baseclass.Contrib.Nuget.Output (>= 2.4)
-    ZFS-Tools (0.0.19)
-    ZFStar (0.0.19)
+    ZFS-Tools (0.0.23)
+    ZFStar (0.0.25)
   remote: https://www.myget.org/f/zenprotocol
-    Consensus (0.3.23)
+    Consensus (0.9.4)
       BouncyCastle
       FsBech32 (>= 0.1.0.7)
       FSharp.Compatibility.OCaml
       FSharp.Core (4.3.4)
       FSharpx.Extras
-      FsNetMQ (>= 0.2.7)
+      FsNetMQ (>= 0.2.8)
       FsPickler
-      Infrastructure (>= 0.3.23)
+      Infrastructure (>= 0.9.4)
       Logary
       Zulib (>= 0.0.1)
-    Infrastructure (0.3.23)
+    Infrastructure (0.9.4)
       BouncyCastle
       FSharp.Compiler.Tools (>= 10.0.2)
       FSharp.Control.Reactive
       FSharp.Core (4.3.4)
       FSharp.Data
       FSharpx.Extras
-      FsNetMQ (>= 0.2.7)
+      FsNetMQ (>= 0.2.8)
       FsPickler
       Logary
       System.Reactive.Compatibility
       Zen.FSharp.Compiler.Service (17.0.2)
-      ZFS-Tools (0.0.19)
-      ZFStar (0.0.19)
+      ZFS-Tools (0.0.23)
+      ZFStar (0.0.25)
     zen_secp256k1_osx (0.1.0.26-v6ad5cdb42a1a)
     zen_z3_linux (4.5.1.8-v1f29cebd4df)
     zen_z3_osx (4.5.1.8-v1f29cebd4df6)
     zen_z3_windows (4.5.1.7-v1f29cebd4df)
-    Zulib (0.3.23)
+    Zulib (0.3.36)
+      BouncyCastle
+      FAKE (>= 4.0 < 5.0)
+      FsBech32 (>= 0.1.0.7)
+      FsCheck
+      FSharp.Compatibility.OCaml
+      FSharpx.Collections
+      NUnit
+      Zen.FSharp.Compiler.Service (17.0.2)
+      zen_z3_linux (4.5.1.8-v1f29cebd4df)
+      zen_z3_osx (4.5.1.8-v1f29cebd4df6)
+      zen_z3_windows (4.5.1.7-v1f29cebd4df)
+      ZFStar (0.0.25)

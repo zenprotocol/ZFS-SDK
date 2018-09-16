@@ -91,8 +91,8 @@ NUGET
       System.Reflection.Metadata (>= 1.4.2)
     zen_secp256k1_linux (0.1.0.18)
       Baseclass.Contrib.Nuget.Output (>= 2.4)
-    ZFS-Tools (0.0.23)
-    ZFStar (0.0.25)
+    ZFS-Tools (0.0.24)
+    ZFStar (0.0.26)
   remote: https://www.myget.org/f/zenprotocol
     Consensus (0.9.4)
       BouncyCastle
@@ -105,7 +105,7 @@ NUGET
       Infrastructure (>= 0.9.4)
       Logary
       Zulib (>= 0.0.1)
-    Infrastructure (0.9.4)
+    Infrastructure (0.9.16)
       BouncyCastle
       FSharp.Compiler.Tools (>= 10.0.2)
       FSharp.Control.Reactive
@@ -117,13 +117,13 @@ NUGET
       Logary
       System.Reactive.Compatibility
       Zen.FSharp.Compiler.Service (17.0.2)
-      ZFS-Tools (0.0.23)
-      ZFStar (0.0.25)
+      ZFS-Tools (0.0.24)
+      ZFStar (0.0.26)
     zen_secp256k1_osx (0.1.0.26-v6ad5cdb42a1a)
     zen_z3_linux (4.5.1.8-v1f29cebd4df)
     zen_z3_osx (4.5.1.8-v1f29cebd4df6)
     zen_z3_windows (4.5.1.7-v1f29cebd4df)
-    Zulib (0.3.36)
+    Zulib (0.3.37)
       BouncyCastle
       FAKE (>= 4.0 < 5.0)
       FsBech32 (>= 0.1.0.7)
@@ -135,4 +135,4 @@ NUGET
       zen_z3_linux (4.5.1.8-v1f29cebd4df)
       zen_z3_osx (4.5.1.8-v1f29cebd4df6)
       zen_z3_windows (4.5.1.7-v1f29cebd4df)
-      ZFStar (0.0.25)
+      ZFStar (0.0.26)

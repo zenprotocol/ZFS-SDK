@@ -101,6 +101,9 @@ let compile (fn:string) =
                          "-r"; expandPath "System.Numerics.dll"
                          "-r"; "Zulib.dll"
                          "-r"; "FSharp.Compatibility.OCaml.dll"
+                         "-r"; "BouncyCastle.Crypto.dll"
+                         "-r"; "FSharpx.Collections.dll"
+                         "-r"; "FsBech32.dll" 
                          "-a"; fn
                          "-o"; dll |]
     let errors, exitCode =

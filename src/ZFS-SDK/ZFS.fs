@@ -7,6 +7,8 @@ open Microsoft.FSharp.Compiler.SourceCodeServices
 open Infrastructure
 open Utils
 
+let z3rlimit: Ref< option<int> > = ref None
+
 let elab_file (filepath:string) =
     log "Elaborating %s ..." (Path.GetFileName(filepath))
     let code = File.ReadAllText filepath
@@ -32,6 +34,9 @@ let elab_file (filepath:string) =
 let run_zfs (fn:string) (args : list<string>) =
     let zfs_exe = "fstar.exe"
     let z3 = choose_z3()
+    let rlimit = match !z3rlimit with
+                 | Some rlimit -> sprintf "--z3rlimit %d" rlimit
+                 | None -> ""
     Platform.run zfs_exe
         ([ Path.GetFullPath fn
            "--smt";     z3
@@ -41,6 +46,7 @@ let run_zfs (fn:string) (args : list<string>) =
            "--use_hints"
            "--use_cached_modules"
            "--no_default_includes"
+           rlimit
          ] @ args)
 
 let verify (fn:string) =

@@ -3,7 +3,7 @@ open Utils
 open ZFS
 
 let usage = """
-USAGE: zebra [< option >] <source file>
+USAGE: zebra [--z3rlimit <int>] [< option >] <source file>
 
 PARAMS:
     <source file>      The ZF* source file to use
@@ -17,6 +17,7 @@ OPTIONS:
     --pack, -p              Pack the contract to be activated on zen blockchain
     --generate-fsx, -g      Generate a .fsx file to test the contract with
     --run-fsx, -r           Run the given .fsx file, automatically loading Zen dlls.
+    --z3rlimit <int>        Specify the rlimit to z3.
 """
 
 
@@ -34,7 +35,7 @@ let expected extension filePath =
         true
 
 [<EntryPoint>]
-let main = function
+let rec main = function
     | [| option; filePath |] ->
         match option with
         | "--create" when Path.GetExtension(filePath) = ".fst" ->
@@ -137,6 +138,11 @@ let cf _ _ _ _ _ wallet _ =
             1
         | Ok _ ->
             0
+    | [| "--z3rlimit"; z3rlim; option; filePath |] ->
+        ZFS.z3rlimit := System.Int32.Parse z3rlim
+                        |> Some
+        main [|option; filePath|]
+        
     | _ ->
         showUsage()
         0

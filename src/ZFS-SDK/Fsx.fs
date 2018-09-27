@@ -12,64 +12,63 @@ open Utils
 open FsBech32
 
 let generate fileName =
-    let code = File.ReadAllText fileName
-
     let moduleName = ASTUtils.parse_file fileName |> ASTUtils.get_module_name
 
     let assemblyPath = "output" / moduleName + ".dll"
 
-    let tpl = sprintf """open Zebra
+    let tpl = sprintf """
 open Consensus
 open Types
 open Zen.Types.Data
 open Zen.Data
+open Infrastructure
 
 module Cost = Zen.Cost.Realized
 
 // Contract Arguments
 let contractId = ContractId (Version0, Hash.compute "%s"B)
 
-// Contract Entrypoint
-let buyTokenWithZen contractFn costFn =
-    let command = ""
-    let sender = Anonymous
-    let wallet : list<PointedOutput> = []
-    let context = {blockNumber=1ul;timestamp=0UL}
+let contractFn, costFn = System.Reflection.Assembly.LoadFrom "%s"
+                         |> Contract.getFunctions
+                         |> Result.get
 
-    // Data with return address
-    let returnAddress = PK Hash.zero |> ZFStar.fsToFstLock |> Lock
+let command = ""
+let sender = Anonymous
+let wallet : list<PointedOutput> = []
+let context = {blockNumber=1ul;timestamp=0UL}
 
-    let data =
-        Zen.Dictionary.add "returnAddress"B returnAddress Zen.Dictionary.empty
-        |> Cost.__force
-        |> Dict
-        |> Collection
-        |> Some
+// Data with return address
+let returnAddress = PK Hash.zero |> ZFStar.fsToFstLock |> Lock
 
-    // Transaction with one input
-    let tx : TxSkeleton.T =
-        {
-            pInputs=
-                [
-                    TxSkeleton.PointedOutput ({txHash=Hash.zero;index=0ul},{lock=PK Hash.zero;spend={asset=Asset.Zen;amount=1UL}})
-                ];
-            outputs=
-                [
+let data =
+    Zen.Dictionary.add "returnAddress"B returnAddress Zen.Dictionary.empty
+    |> Cost.__force
+    |> Dict
+    |> Collection
+    |> Some
 
-                ]
-        }
+// Transaction with one input
+let tx : TxSkeleton.T =
+    {
+        pInputs=
+            [
+                TxSkeleton.PointedOutput ({txHash=Hash.zero;index=0ul},{lock=PK Hash.zero;spend={asset=Asset.Zen;amount=1UL}})
+            ];
+        outputs=
+            [
 
-    match contractFn tx context contractId command sender data wallet with
-    | Ok (tx, message) ->
-        printfn "main fn result:\n tx: %%A\n message: %%A" tx message
-    | Error error ->
-        printfn "main fn error: %%A" error
+            ]
+    }
+    
+// Empty state
+let state : data option = None
 
-load "%s"
-==> buyTokenWithZen
+match contractFn tx context contractId command sender data wallet state with
+| Ok (tx, message, stateUpdate) ->
+    printfn "main fn result:\n tx: %%A\n message: %%A\n state update: %%A" tx message stateUpdate
+| Error error ->
+    printfn "main fn error: %%A" error
 """
-
-
     let tpl = tpl moduleName assemblyPath
 
     let fsxFile = changeExtension ".fsx" fileName
@@ -79,7 +78,7 @@ load "%s"
 
 let run (fsxFile : string) =
 
-    let fsinteractive() : string =
+    let fsinteractive : string =
         match Platform.platform with
         | PlatformID.Win32NT -> "fsi"
         | PlatformID.MacOSX | PlatformID.Unix -> "fsharpi"
@@ -95,10 +94,9 @@ let run (fsxFile : string) =
                          sprintf "--reference:%s" (workDir/"Zulib.dll")
                          sprintf "--reference:%s" (workDir/"Consensus.dll")
                          sprintf "--reference:%s" (workDir/"Infrastructure.dll")
-                         sprintf "--load:%s" (workDir/"ZebraLib.fsx")
                          fsxFile |]
     let pStartInfo = ProcessStartInfo(
-                        fsinteractive(),
+                        fsinteractive,
                         args,
                         RedirectStandardOutput=true,
                         RedirectStandardError=true,

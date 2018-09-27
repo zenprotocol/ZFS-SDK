@@ -58,10 +58,13 @@ let buyTokenWithZen contractFn costFn =
 
                 ]
         }
+        
+    // Empty state
+    let state : data option = None
 
-    match contractFn tx context contractId command sender data wallet with
-    | Ok (tx, message) ->
-        printfn "main fn result:\n tx: %%A\n message: %%A" tx message
+    match contractFn tx context contractId command sender data wallet state with
+    | Ok (tx, message, stateUpdate) ->
+        printfn "main fn result:\n tx: %%A\n message: %%A\n state update: %%A" tx message stateUpdate
     | Error error ->
         printfn "main fn error: %%A" error
 

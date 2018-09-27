@@ -16,10 +16,10 @@ source https://www.myget.org/f/zenprotocol
 framework: 47
 
 nuget Zulib 0.3.37
-nuget Infrastructure
-nuget Consensus
+nuget Infrastructure 0.9.21
+nuget Consensus 0.9.21
 nuget zen_secp256k1_osx
 nuget zen_secp256k1_linux
 nuget zen_z3_osx
 nuget zen_z3_linux
-nuget zen_z3_windows 4.5.1.7-v1f29cebd4df
+nuget zen_z3_windows

@@ -12,6 +12,11 @@ open Utils
 open FsBech32
 
 let generate fileName =
+    let cHash = File.ReadAllText fileName
+                |> Text.Encoding.ASCII.GetBytes
+                |> Hash.compute
+                |> Hash.toString
+
     let moduleName = ASTUtils.parse_file fileName |> ASTUtils.get_module_name
 
     let assemblyPath = "output" / moduleName + ".dll"
@@ -26,7 +31,7 @@ open Infrastructure
 module Cost = Zen.Cost.Realized
 
 // Contract Arguments
-let contractId = ContractId (Version0, Hash.compute "%s"B)
+let contractId = ContractId (Version0, Hash.fromString "%s" |> Result.get)
 
 let contractFn, costFn = System.Reflection.Assembly.LoadFrom "%s"
                          |> Contract.getFunctions
@@ -69,7 +74,7 @@ match contractFn tx context contractId command sender data wallet state with
 | Error error ->
     printfn "main fn error: %%A" error
 """
-    let tpl = tpl moduleName assemblyPath
+    let tpl = tpl cHash assemblyPath
 
     let fsxFile = changeExtension ".fsx" fileName
     File.WriteAllText (fsxFile, tpl)

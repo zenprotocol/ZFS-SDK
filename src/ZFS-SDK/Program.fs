@@ -134,7 +134,7 @@ let cf _ _ _ _ _ wallet _ =
             Error ""
         |> function
         | Error error ->
-            if error <> "" then log "Error: %A" error
+            if error <> "" then log "Error: %A" error else showUsage()
             1
         | Ok _ ->
             0
@@ -142,7 +142,7 @@ let cf _ _ _ _ _ wallet _ =
         ZFS.z3rlimit := System.Int32.Parse z3rlim
                         |> Some
         main [|option; filePath|]
-        
+
     | _ ->
         showUsage()
         0

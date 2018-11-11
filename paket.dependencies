@@ -14,6 +14,10 @@ nuget ZFStar 0.0.26
 nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
 
+nuget FSharp.Data 2.4.6
+nuget Hopac 0.3.23
+nuget NodaTime 1.3.2
+
 nuget Zulib 0.3.37-patch245
 nuget Infrastructure 0.9.21
 nuget Consensus 0.9.21

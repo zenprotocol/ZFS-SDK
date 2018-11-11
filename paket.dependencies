@@ -1,6 +1,8 @@
 generate_load_scripts: true
 
 source https://www.nuget.org/api/v2
+source https://www.myget.org/F/zenprotocol/api/v3/index.json
+
 framework: 47
 
 nuget FSharp.Compiler.Tools
@@ -12,10 +14,7 @@ nuget ZFStar 0.0.26
 nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
 
-source https://www.myget.org/f/zenprotocol
-framework: 47
-
-nuget Zulib 0.3.37
+nuget Zulib 0.3.37-patch245
 nuget Infrastructure 0.9.21
 nuget Consensus 0.9.21
 nuget zen_secp256k1_osx

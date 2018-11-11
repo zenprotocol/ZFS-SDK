@@ -8,6 +8,7 @@ packages
 .paket/Paket.Restore.targets
 .paket/load
 paket-files
+paket.local
 
 *.nupkg
 

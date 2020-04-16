@@ -55,6 +55,7 @@
     <Compile Include="Utils.fs" />
     <Compile Include="Fsx.fs" />
     <Compile Include="ZFS.fs" />
+    <Compile Include="ContractId.fs" />
     <Compile Include="Program.fs" />
     <Content Include="CopyZulib.targets" />
     <Content Include="paket.references" />

@@ -1,6 +1,5 @@
 ﻿open System.IO
 open Utils
-open ZFS
 open ContractTemplate
 
 let usage = """
@@ -11,13 +10,14 @@ PARAMS:
 
 OPTIONS:
     --create                Create a new template contract
-    --elaborate, -e         Elaborate the source File and verify
+    --elaborate, -e         Elaborate the source file and verify
     --verify, -v            Verify the source file
     --extract, -x           Extract the source file
     --compile, -c           Compile from source file
     --pack, -p              Pack the contract to be activated on zen blockchain
     --generate-fsx, -g      Generate a .fsx file to test the contract with
     --run-fsx, -r           Run the given .fsx file, automatically loading Zen dlls.
+    --cid                   Compute contract id
     --z3rlimit <int>        Specify the rlimit to z3.
 """
 
@@ -73,6 +73,9 @@ let rec main = function
 
         | "-p" | "--pack" when expected ".fst" filePath ->
             ZFS.pack filePath
+        
+        | "--cid" when expected ".fst" filePath ->
+            ContractId.showContractId filePath
 
         | _ ->
             Error ""

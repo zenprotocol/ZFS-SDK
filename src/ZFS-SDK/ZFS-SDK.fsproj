@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="ContractTemplate.fs" />
     <Compile Include="Utils.fs" />
     <Compile Include="Fsx.fs" />
     <Compile Include="ZFS.fs" />

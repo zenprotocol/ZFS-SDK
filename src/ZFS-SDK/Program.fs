@@ -2,6 +2,8 @@
 open Utils
 open ContractTemplate
 
+let mutable NumOfBlocks = 1ul
+
 let usage = """
 USAGE: zebra [--z3rlimit <int>] [< option >] <source file>
 
@@ -18,6 +20,7 @@ OPTIONS:
     --generate-fsx, -g      Generate a .fsx file to test the contract with
     --run-fsx, -r           Run the given .fsx file, automatically loading Zen dlls.
     --cid                   Compute contract id
+    --acost                  Compute contract activation cost
     --z3rlimit <int>        Specify the rlimit to z3.
 """
 
@@ -76,6 +79,9 @@ let rec main = function
         
         | "--cid" when expected ".fst" filePath ->
             ContractId.showContractId filePath
+            
+        | "--acost" when expected ".fst" filePath ->
+            Cost.showTotalCost Consensus.Chain.mainParameters filePath NumOfBlocks
 
         | _ ->
             Error ""
@@ -90,6 +96,10 @@ let rec main = function
                         |> Some
         main [|option; filePath|]
 
+    | [| "--blocks"; numOfBlocks; option; filePath |] ->
+        NumOfBlocks <- uint32 numOfBlocks
+        main [|option; filePath|]
+    
     | _ ->
         showUsage()
         0

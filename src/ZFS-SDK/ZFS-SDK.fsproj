@@ -35,6 +35,9 @@
     <OtherFlags>--warnon:1182</OtherFlags>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Argu, Version=6.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\packages\Argu\lib\netstandard2.0\Argu.dll</HintPath>
+    </Reference>
     <Reference Include="basic, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(SolutionDir)\..\packages\ZFStar\tools\basic.dll</HintPath>
     </Reference>
@@ -57,7 +60,6 @@
     <Compile Include="ZFS.fs" />
     <Compile Include="ContractId.fs" />
     <Compile Include="Cost.fs" />
-    <Compile Include="Program2.fs" />
     <Compile Include="Program.fs" />
     <Content Include="CopyZulib.targets" />
     <Content Include="paket.references" />

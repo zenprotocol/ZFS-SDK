@@ -1,148 +1,547 @@
-﻿open System.IO
-open Utils
-open ZFS
+module Program
 
-let usage = """
-USAGE: zebra [--z3rlimit <int>] [< option >] <source file>
-
-PARAMS:
-    <source file>      The ZF* source file to use
-
-OPTIONS:
-    --create                Create a new template contract
-    --elaborate, -e         Elaborate the source File and verify
-    --verify, -v            Verify the source file
-    --extract, -x           Extract the source file
-    --compile, -c           Compile from source file
-    --pack, -p              Pack the contract to be activated on zen blockchain
-    --generate-fsx, -g      Generate a .fsx file to test the contract with
-    --run-fsx, -r           Run the given .fsx file, automatically loading Zen dlls.
-    --z3rlimit <int>        Specify the rlimit to z3.
-"""
+open Argu
 
 
-let showUsage() =
-    printfn "%s" usage
 
-let expected extension filePath =
-    if Path.GetExtension(filePath) <> extension then
-        log "Expected %s extension" extension
-        false
-    else if not <| File.Exists filePath then
-        log "File not found: %s" filePath
-        false
-    else
-        true
+let DEFAULT_Z3RLIMIT = 2723280u 
+
+
+let (>>=) x f =
+    Result.bind f x
+
+let handle_log_types (x : Option<'a>) : string =
+    x
+    |> Option.map (fun _ -> "--log_types")
+    |> Option.defaultValue ""
+
+let handle_log_queries (x : Option<'a>) : string =
+    x
+    |> Option.map (fun _ -> "--log_queries")
+    |> Option.defaultValue ""
+
+
+
+module Create =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "Name of the generated contract"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        let code =
+            ContractTemplate.code filename
+        
+        System.IO.File.WriteAllText(filename, code)
+
+        Utils.log "Created %s" filename
+
+        Ok filename
+
+
+
+module Elaborate =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        | [<Unique>]
+            Z3rlimit of uint32
+        
+        | [<Unique>]
+            Log_Types
+        
+        | [<Unique>]
+            Log_Queries
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "File name of the contract to elaborate"
+                    | Z3rlimit _ ->
+                        "Z3 rlimit"
+                    | Log_Types ->
+                        "Log types"
+                    | Log_Queries ->
+                        "Log Z3 queries"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        let z3rlimit =
+            args.TryGetResult(Z3rlimit)
+        
+        let logtypes =
+            handle_log_types <| args.TryGetResult(Log_Types)
+        
+        let logqueries =
+            handle_log_queries <| args.TryGetResult(Log_Queries)
+        
+        ZFS.elab_file filename
+        >>= ZFS.verify z3rlimit [logtypes; logqueries]
+
+
+
+module Verify =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        | [<Unique>]
+            Z3rlimit of uint32
+        
+        | [<Unique>]
+            Log_Types
+        
+        | [<Unique>]
+            Log_Queries
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "File name of the contract to verify"
+                    | Z3rlimit _ ->
+                        "Z3 rlimit"
+                    | Log_Types ->
+                        "Log types"
+                    | Log_Queries ->
+                        "Log Z3 queries"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        let z3rlimit =
+            args.TryGetResult(Z3rlimit)
+        
+        let logtypes =
+            handle_log_types <| args.TryGetResult(Log_Types)
+        
+        let logqueries =
+            handle_log_queries <| args.TryGetResult(Log_Queries)
+        
+        ZFS.verify z3rlimit [logtypes; logqueries] filename
+
+
+
+module Extract =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        | [<Unique>]
+            Z3rlimit of uint32
+        
+        | [<Unique>]
+            Log_Types
+        
+        | [<Unique>]
+            Log_Queries
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "File name of the contract to extract"
+                    | Z3rlimit _ ->
+                        "Z3 rlimit"
+                    | Log_Types ->
+                        "Log types"
+                    | Log_Queries ->
+                        "Log Z3 queries"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        let z3rlimit =
+            args.TryGetResult(Z3rlimit)
+        
+        let logtypes =
+            handle_log_types <| args.TryGetResult(Log_Types)
+        
+        let logqueries =
+            handle_log_queries <| args.TryGetResult(Log_Queries)
+        
+        ZFS.elab_file filename
+        >>= ZFS.extract z3rlimit [logtypes; logqueries]
+
+
+
+module Compile =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        | [<Unique>]
+            Z3rlimit of uint32
+        
+        | [<Unique>]
+            Log_Types
+        
+        | [<Unique>]
+            Log_Queries
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "File name of the contract to compile"
+                    | Z3rlimit _ ->
+                        "Z3 rlimit"
+                    | Log_Types ->
+                        "Log types"
+                    | Log_Queries ->
+                        "Log Z3 queries"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        let z3rlimit =
+            args.TryGetResult(Z3rlimit)
+        
+        let logtypes =
+            handle_log_types <| args.TryGetResult(Log_Types)
+        
+        let logqueries =
+            handle_log_queries <| args.TryGetResult(Log_Queries)
+        
+        ZFS.elab_file filename
+        >>= ZFS.extract z3rlimit [logtypes; logqueries]
+        >>= ZFS.compile
+
+
+
+module Pack =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "File name of the contract to pack"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename = args.GetResult(Filename)
+        
+        ZFS.pack filename
+
+
+
+module Generate_Fsx =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "File name of the source contract to generate FSX script from"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        Fsx.generate filename
+
+
+
+module Run_Fsx =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "File name of FSX script"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        Fsx.run filename
+
+
+
+module Contract_Id =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename _ ->
+                        "File name of contract"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        ZFS.contractId filename
+
+
+
+module ACost =
+    
+    type Arg =
+        
+        | [<MainCommand>]
+            Filename of string
+        
+        |
+            NumOfBlocks of uint32
+        
+        |
+            Z3rlimit of uint32
+        
+        with
+            
+            interface IArgParserTemplate with
+                
+                member s.Usage =
+                    match s with
+                    | Filename    _ ->
+                        "File name of contract"
+                    | NumOfBlocks _ ->
+                        "Number of blocks"
+                    | Z3rlimit    _ ->
+                        "Z3 rlimit"
+    
+    
+    let handle (args : ParseResults<Arg>) : Result<string, string> =
+        
+        let filename =
+            args.GetResult(Filename)
+        
+        let numOfBlocks =
+            args.GetResult(NumOfBlocks)
+        
+        let z3rlimit =
+            args.TryGetResult(Z3rlimit)
+            |> Option.defaultValue DEFAULT_Z3RLIMIT
+        
+        ZFS.activationCost z3rlimit filename numOfBlocks
+
+
+
+type Command =
+    
+    | [<CliPrefix(CliPrefix.None)>]
+        Create
+        of ParseResults<Create.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("e")>]
+        Elaborate
+        of ParseResults<Elaborate.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("v")>]
+        Verify
+        of ParseResults<Verify.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("x")>]
+        Extract
+        of ParseResults<Extract.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("c")>]
+        Compile
+        of ParseResults<Compile.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("p")>]
+        Pack
+        of ParseResults<Pack.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("g")>]
+        Generate_Fsx
+        of ParseResults<Generate_Fsx.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("r")>]
+        Run_Fsx
+        of ParseResults<Run_Fsx.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("cid")>]
+        Contract_Id
+        of ParseResults<Contract_Id.Arg>
+    
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("ac")>]
+        ACost
+        of ParseResults<ACost.Arg>
+    
+    with
+        
+        interface IArgParserTemplate with
+            
+            member s.Usage =
+                
+                match s with
+                
+                | Create _ ->
+                    "Create a new template contract"
+                
+                | Elaborate _ ->
+                    "Elaborate the source File and verify"
+                
+                | Verify _ ->
+                    "Verify the source file"
+                
+                | Extract _ ->
+                    "Extract the source file"
+                
+                | Compile _ ->
+                    "Compile from source file"
+                
+                | Pack _ ->
+                    "Pack the contract to be activated on zen blockchain"
+                
+                | Generate_Fsx _ ->
+                    "Generate a .fsx file to test the contract with"
+                
+                | Run_Fsx _ ->
+                    "Run the given .fsx file, automatically loading Zen dlls."
+                
+                | Contract_Id _ ->
+                    "Compute contract ID."
+                
+                | ACost _ ->
+                    "Compute activation cost."
+
+
+
+
+let parser =
+    ArgumentParser.Create<Command>(programName = "zebra")
+
+
+let usage =
+    parser.PrintUsage()
+
 
 [<EntryPoint>]
-let rec main = function
-    | [| option; filePath |] ->
-        match option with
-        | "--create" when Path.GetExtension(filePath) = ".fst" ->
-
-            let code = sprintf """module %s
-
-open Zen.Types
-open Zen.Base
-open Zen.Cost
-open Zen.Asset
-open Zen.Data
-
-module D = Zen.Dictionary
-module W = Zen.Wallet
-module RT = Zen.ResultT
-module Tx = Zen.TxSkeleton
-module C = Zen.Cost
-module CR = Zen.ContractResult
-
-let buy txSkeleton contractId returnAddress =
-  let! contractToken = Zen.Asset.getDefault contractId in
-  let! amount = Tx.getAvailableTokens zenAsset txSkeleton in
-
-  let! txSkeleton =
-    Tx.lockToContract zenAsset amount contractId txSkeleton
-    >>= Tx.mint amount contractToken
-    >>= Tx.lockToAddress contractToken amount returnAddress in
-
-  CR.ofTxSkel txSkeleton
-
-let redeem txSkeleton contractId returnAddress wallet =
-  let! contractToken = Zen.Asset.getDefault contractId in
-  let! amount = Tx.getAvailableTokens contractToken txSkeleton in
-
-  let! txSkeleton =
-    Tx.destroy amount contractToken txSkeleton
-    >>= Tx.lockToAddress zenAsset amount returnAddress
-    >>= Tx.fromWallet zenAsset amount contractId wallet in
-
-  CR.ofOptionTxSkel "contract doesn't have enough zens tokens" txSkeleton
-
-let main txSkeleton _ contractId command sender messageBody wallet state =
-  let! returnAddress =
-    messageBody >!= tryDict
-                >?= D.tryFind "returnAddress"
-                >?= tryLock
-  in
-  match returnAddress with
-  | Some returnAddress ->
-    if command = "redeem" then
-      redeem txSkeleton contractId returnAddress wallet
-    else if command = "" || command = "buy" then
-      buy txSkeleton contractId returnAddress
-      |> autoInc
-    else
-      RT.autoFailw "unsupported command"
-  | None ->
-    RT.autoFailw "returnAddress is required"
-
-let cf _ _ _ _ _ wallet _ =
-    4 + 64 + 2 + (64 + (64 + (64 + 64 + (Zen.Wallet.size wallet * 128 + 192) + 3)) + 25) + 31
-    |> C.ret #nat"""           (filePath.Substring (0, filePath.Length - 4))
-
-            System.IO.File.WriteAllText (filePath, code)
-
-            log "Created %s" filePath
-
-            Ok filePath
-
-        | "-e" | "--elaborate" when expected ".fst" filePath ->
-            ZFS.elab_file filePath
-            >>= ZFS.verify
-
-        | "-v" | "--verify" when expected ".fst" filePath ->
-            ZFS.verify filePath
-
-        | "-x" | "--extract" when expected ".fst" filePath ->
-            ZFS.elab_file filePath
-            >>= ZFS.extract
-
-        | "-c" | "--compile" when expected ".fst" filePath ->
-            ZFS.elab_file filePath
-            >>= ZFS.extract
-            >>= ZFS.compile
-
-        | "-g" | "--generate-fsx" when expected ".fst" filePath ->
-            Fsx.generate filePath
-
-        | "-r" | "--run-fsx" when expected ".fsx" filePath ->
-            Fsx.run filePath
-
-        | "-p" | "--pack" when expected ".fst" filePath ->
-            ZFS.pack filePath
-
+let main argv =
+    
+    if Array.isEmpty argv then printfn "%s" usage
+    
+    try
+        let results =
+            parser.ParseCommandLine(inputs = argv, raiseOnUsage = true)
+        
+        match results.GetAllResults() with
+        
+        | [Create args] ->
+            Create.handle args
+        
+        | [Elaborate args] ->
+            Elaborate.handle args
+        
+        | [Verify args] ->
+            Verify.handle args
+        
+        | [Extract args] ->
+            Extract.handle args
+        
+        | [Compile args] ->
+            Compile.handle args
+        
+        | [Pack args] ->
+            Pack.handle args
+        
+        | [Generate_Fsx args] ->
+            Generate_Fsx.handle args
+        
+        | [Run_Fsx args] ->
+            Run_Fsx.handle args
+        
+        | [Contract_Id args] ->
+            Contract_Id.handle args
+        
+        | [ACost args] ->
+            ACost.handle args
+        
         | _ ->
-            Error ""
-        |> function
-        | Error error ->
-            if error <> "" then log "Error: %A" error else showUsage()
-            1
-        | Ok _ ->
-            0
-    | [| "--z3rlimit"; z3rlim; option; filePath |] ->
-        ZFS.z3rlimit := System.Int32.Parse z3rlim
-                        |> Some
-        main [|option; filePath|]
-
-    | _ ->
-        showUsage()
+            Error "Invalid argument"
+        
+        |> ignore
         0
+    with e ->
+        eprintf "%s" e.Message
+        1

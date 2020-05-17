@@ -11,6 +11,7 @@ nuget FSharpx.Extras
 nuget ZFStar 0.0.26
 nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
+nuget Argu
 
 source https://www.myget.org/f/zenprotocol
 framework: 47

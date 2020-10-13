@@ -6,6 +6,37 @@ open Argu
 
 
 
+module Strings =
+    
+    module Usage =
+        
+        let FILEPATH : Printf.StringFormat<string -> string -> string> = "Specify the name of the %s file to be %s"
+        
+        [<Literal>]
+        let CONTRACT = "Specify the name of the contract"
+        
+        [<Literal>]
+        let Z3RLIMIT = "Specify the rlimit to Z3"
+        
+        [<Literal>]
+        let NUM_OF_BLOCKS = "Specify the number of blocks you want the contract to be active for"
+    
+    module Ext =
+    
+        [<Literal>]
+        let FST = ".fst"
+        
+        [<Literal>]
+        let FSX = ".fsx"
+    
+    module Error =
+        
+        let EXT : Printf.StringFormat<string -> string> = "File extension must be %s"
+
+open Strings
+
+
+
 module Create =
     
     type Cmd =
@@ -14,17 +45,17 @@ module Create =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the file to be created"
+                | Filepath _ -> sprintf Usage.FILEPATH Ext.FST "created" 
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult Filepath |> fun filepath -> 
-            if Path.GetExtension(filepath) = ".fst" then
+            if Path.GetExtension(filepath) = Ext.FST then
                 let code = sprintf codeT (filepath.Substring (0, filepath.Length - 4))
                 System.IO.File.WriteAllText (filepath, code)
                 log "Created %s" filepath
                 Ok filepath
             else
-                Error "File extension must be .fst"
+                Error (sprintf Error.EXT Ext.FST)
 
 
 
@@ -37,8 +68,8 @@ module Elaborate =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the file to be elaborated"
-                | Z3rlimit _ -> "Specify the rlimit to Z3"
+                | Filepath _ -> sprintf Usage.FILEPATH Ext.FST "elaborated"
+                | Z3rlimit _ -> Usage.Z3RLIMIT
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult    Filepath |> fun filepath ->
@@ -57,8 +88,8 @@ module Verify =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the file to be verified"
-                | Z3rlimit _ -> "Specify the rlimit to Z3"
+                | Filepath _ -> sprintf Usage.FILEPATH Ext.FST "verified"
+                | Z3rlimit _ -> Usage.Z3RLIMIT
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult    Filepath |> fun filepath ->
@@ -76,8 +107,8 @@ module Extract =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the file to be extracted"
-                | Z3rlimit _ -> "Specify the rlimit to Z3"
+                | Filepath _ -> sprintf Usage.FILEPATH Ext.FST "extracted"
+                | Z3rlimit _ -> Usage.Z3RLIMIT
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult    Filepath |> fun filepath ->
@@ -96,8 +127,8 @@ module Compile =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the file to be compiled"
-                | Z3rlimit _ -> "Specify the rlimit to Z3"
+                | Filepath _ -> sprintf Usage.FILEPATH Ext.FST "compiled"
+                | Z3rlimit _ -> Usage.Z3RLIMIT
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult    Filepath |> fun filepath ->
@@ -116,7 +147,7 @@ module Pack =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the file to be packed"
+                | Filepath _ -> sprintf Usage.FILEPATH Ext.FST "packed"
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult Filepath |> fun filepath ->
@@ -132,7 +163,7 @@ module GenerateFSX =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                |  Filepath _ -> "Specify the name of the .fsx file to be generated"
+                |  Filepath _ -> sprintf Usage.FILEPATH Ext.FSX "generated"
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult Filepath |> fun filepath ->
@@ -148,7 +179,7 @@ module RunFSX =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the .fsx file to be executed"
+                | Filepath _ -> sprintf Usage.FILEPATH Ext.FSX "executed"
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult Filepath |> fun filepath ->
@@ -164,7 +195,7 @@ module ContractId =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the contract"
+                | Filepath _ -> Usage.CONTRACT
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult Filepath |> fun filepath ->
@@ -181,8 +212,8 @@ module ACost =
         interface IArgParserTemplate with
             member arg.Usage =
                 match arg with
-                | Filepath _ -> "Specify the name of the contract"
-                | NumOfBlocks _ -> "Specify the number of blocks you want the contract to be active for"
+                | Filepath _ -> Usage.CONTRACT
+                | NumOfBlocks _ -> Usage.NUM_OF_BLOCKS
     
     let handle (args : ParseResults<Cmd>) =
         args.GetResult Filepath       |> fun filepath    ->
@@ -284,8 +315,9 @@ let main argv =
             | [] ->
                 printfn "%s" usage
             | cmd :: _ ->
-                handleCommand cmd
-                |> ignore
+                match handleCommand cmd with
+                | Ok res    -> printfn "%s" res
+                | Error msg -> eprintfn "%s" msg
     with e ->
         printfn "%s" e.Message
     0

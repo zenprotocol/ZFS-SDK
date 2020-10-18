@@ -146,7 +146,7 @@
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7'">
       <ItemGroup>
         <Reference Include="FsBech32">
-          <HintPath>..\..\packages\FsBech32\lib\net45\FsBech32.dll</HintPath>
+          <HintPath>..\..\packages\FsBech32\lib\net47\FsBech32.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -169,17 +169,6 @@
       <ItemGroup>
         <Reference Include="FSharp.Compatibility.OCaml">
           <HintPath>..\..\packages\FSharp.Compatibility.OCaml\lib\net45\FSharp.Compatibility.OCaml.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7'">
-      <ItemGroup>
-        <Reference Include="FSharp.Control.AsyncSeq">
-          <HintPath>..\..\packages\FSharp.Control.AsyncSeq\lib\net45\FSharp.Control.AsyncSeq.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -213,17 +202,6 @@
       <ItemGroup>
         <Reference Include="FSharp.Data">
           <HintPath>..\..\packages\FSharp.Data\lib\net45\FSharp.Data.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7'">
-      <ItemGroup>
-        <Reference Include="FSharpx.Async">
-          <HintPath>..\..\packages\FSharpx.Async\lib\net45\FSharpx.Async.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

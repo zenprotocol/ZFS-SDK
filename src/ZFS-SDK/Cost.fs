@@ -48,7 +48,7 @@ module private Util =
         code
         |> computeHash Version0
         |> getModuleName
-        |> ZFStar.recordHints code
+        |> ZFStar.recordHints rlimit code
 
 let computeCosts
     ( chain       : ChainParameters )

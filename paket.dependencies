@@ -23,3 +23,4 @@ nuget zen_secp256k1_linux
 nuget zen_z3_osx
 nuget zen_z3_linux
 nuget zen_z3_windows
+nuget Argu

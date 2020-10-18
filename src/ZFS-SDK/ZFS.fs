@@ -7,7 +7,7 @@ open Microsoft.FSharp.Compiler.SourceCodeServices
 open Infrastructure
 open Utils
 
-let z3rlimit: Ref< option<int> > = ref None
+//let z3rlimit: Ref< option<int> > = ref None
 
 let elab_file (filepath:string) =
     log "Elaborating %s ..." (Path.GetFileName(filepath))
@@ -31,12 +31,13 @@ let elab_file (filepath:string) =
         log "Wrote elaborated source to %s" (Path.GetFileName(elaboratedFilePath))
         elaboratedFilePath)
 
-let run_zfs (fn:string) (args : list<string>) =
+let run_zfs (z3rlimit : option<int>) (fn : string) (args : list<string>) =
     let zfs_exe = "fstar.exe"
     let z3 = choose_z3()
-    let rlimit = match !z3rlimit with
-                 | Some rlimit -> sprintf "--z3rlimit %d" rlimit
-                 | None -> ""
+    let rlimit =
+         match z3rlimit with
+         | Some rlimit -> sprintf "--z3rlimit %d" rlimit
+         | None -> ""
     Platform.run zfs_exe
         ([ Path.GetFullPath fn
            "--smt";     z3
@@ -49,18 +50,18 @@ let run_zfs (fn:string) (args : list<string>) =
            rlimit
          ] @ args)
 
-let verify (fn:string) =
-    run_zfs fn []
+let verify (z3rlimit : option<int>) (fn : string) =
+    run_zfs z3rlimit fn []
     |> Result.map (fun _ ->
         log "Verified"
         "")
 
-let extract (fn:string) =
+let extract (z3rlimit : option<int>) (fn : string) =
     log "Extracting %s ..." (Path.GetFileName(fn))
     let odir = getDir fn
     let module_name = ASTUtils.parse_file fn |> ASTUtils.get_module_name
     ensureDirectory odir
-    run_zfs fn
+    run_zfs z3rlimit fn
         [ "--codegen"; "FSharp"
           "--odir"; odir
           "--extract_module"; module_name ]

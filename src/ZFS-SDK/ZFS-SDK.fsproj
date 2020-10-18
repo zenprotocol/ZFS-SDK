@@ -44,6 +44,9 @@
     <Reference Include="FSharp.Data.DesignTime, Version=2.4.6.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\packages\FSharp.Data\lib\net45\FSharp.Data.DesignTime.dll</HintPath>
     </Reference>
+    <Reference Include="FSharpx.Extras, Version=2.3.2.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\packages\FSharpx.Extras\lib\netstandard2.0\FSharpx.Extras.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="parser, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>$(SolutionDir)\..\packages\ZFStar\tools\parser.dll</HintPath>
@@ -213,17 +216,6 @@
       <ItemGroup>
         <Reference Include="FSharpx.Collections">
           <HintPath>..\..\packages\FSharpx.Collections\lib\net40\FSharpx.Collections.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7'">
-      <ItemGroup>
-        <Reference Include="FSharpx.Extras">
-          <HintPath>..\..\packages\FSharpx.Extras\lib\net45\FSharpx.Extras.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>
@@ -538,6 +530,17 @@
       <ItemGroup>
         <Reference Include="Zulib">
           <HintPath>..\..\packages\Zulib\lib\Zulib.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7'">
+      <ItemGroup>
+        <Reference Include="ContractsTestingLib">
+          <HintPath>..\..\packages\ContractsTestingLib\lib\ContractsTestingLib.dll</HintPath>
           <Private>True</Private>
           <Paket>True</Paket>
         </Reference>

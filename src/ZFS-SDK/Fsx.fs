@@ -92,13 +92,14 @@ let run (fsxFile : string) =
 
     let workDir = System.Reflection.Assembly.GetExecutingAssembly().Location
                   |> Path.GetDirectoryName
-
+    
     let args : string =
         String.concat " "
                       [| sprintf "--lib:%s" workDir
                          sprintf "--reference:%s" (workDir/"Zulib.dll")
                          sprintf "--reference:%s" (workDir/"Consensus.dll")
                          sprintf "--reference:%s" (workDir/"Infrastructure.dll")
+                         sprintf "--reference:%s" (workDir/"ContractsTestingLib.dll")
                          fsxFile |]
     let pStartInfo = ProcessStartInfo(
                         fsinteractive,

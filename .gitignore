@@ -17,3 +17,6 @@ Tests/bin
 
 package/Release
 package/*.tgz
+/src/ZFS-SDK.sln.DotSettings.user
+/src/ZFS-SDK.DotSettings.user
+.DS_Store

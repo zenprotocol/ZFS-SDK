@@ -16,11 +16,13 @@ nuget Argu
 source https://www.myget.org/f/zenprotocol
 framework: 47
 
-nuget Zulib 0.3.37
-nuget Infrastructure 0.9.21
-nuget Consensus 0.9.21
+nuget Zulib 0.3.41
+nuget Infrastructure 1.0.4
+nuget Consensus 1.0.4
 nuget zen_secp256k1_osx
 nuget zen_secp256k1_linux
 nuget zen_z3_osx
 nuget zen_z3_linux
 nuget zen_z3_windows
+nuget Argu
+nuget ContractsTestingLib 0.1.1

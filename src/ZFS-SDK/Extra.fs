@@ -33,25 +33,25 @@ module ActivationCost =
         >> FsBech32.Base16.encode
         >> (+) "Z"
     
-    let recordHints (code:string) : Result<string, string> =
+    let recordHints (z3rlimit : uint32) (code:string) : Result<string, string> =
         code
         |> ContractId.computeHash Version0
         |> getModuleName
-        |> ZFStar.recordHints code
+        |> ZFStar.recordHints z3rlimit code
     
-    let compute (chain : ChainParameters) rlimit (numberOfBlocks:uint32) code =
+    let compute (chain : ChainParameters) (z3rlimit : uint32) (numberOfBlocks:uint32) (code : string) =
         let contractId = ContractId.makeContractId Version0 code
 
         let  hints = Measure.measure
                         (sprintf "recording hints for contract %A" contractId)
-                        (lazy(recordHints code))
+                        (lazy(recordHints z3rlimit code))
                         |> Result.get
         
         let queries = ZFStar.totalQueries hints |> Result.get
 
         let codeLength = String.length code |> uint64
         
-        let activationFee = queries * rlimit / 100ul |> uint64
+        let activationFee = queries * z3rlimit / 100ul |> uint64
         let baseSacrifice = chain.sacrificePerByteBlock * codeLength
         let activationSacrifice = chain.sacrificePerByteBlock * codeLength * (uint64 numberOfBlocks)
 

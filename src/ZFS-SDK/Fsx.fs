@@ -99,6 +99,7 @@ let run (fsxFile : string) =
                          sprintf "--reference:%s" (workDir/"Zulib.dll")
                          sprintf "--reference:%s" (workDir/"Consensus.dll")
                          sprintf "--reference:%s" (workDir/"Infrastructure.dll")
+                         sprintf "--reference:%s" (workDir/"ContractsTestingLib.dll")
                          fsxFile |]
     let pStartInfo = ProcessStartInfo(
                         fsinteractive,

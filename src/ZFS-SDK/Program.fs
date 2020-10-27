@@ -4,8 +4,9 @@ open Argu
 
 
 
-let DEFAULT_Z3RLIMIT = 2723280u 
-
+[<Literal>]
+let DEFAULT_Z3RLIMIT =
+    2723280u 
 
 let (>>=) x f =
     Result.bind f x

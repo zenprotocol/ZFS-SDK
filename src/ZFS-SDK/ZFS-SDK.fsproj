@@ -566,6 +566,17 @@
       </ItemGroup>
     </When>
   </Choose>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And $(TargetFrameworkVersion) == 'v4.7'">
+      <ItemGroup>
+        <Reference Include="ContractsTestingLib">
+          <HintPath>..\..\packages\ContractsTestingLib\lib\ContractsTestingLib.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
   <Import Project="..\..\packages\Baseclass.Contrib.Nuget.Output\build\Baseclass.Contrib.Nuget.Output.targets" Condition="Exists('..\..\packages\Baseclass.Contrib.Nuget.Output\build\Baseclass.Contrib.Nuget.Output.targets')" Label="Paket" />
   <Import Project="..\..\packages\zen_secp256k1_osx\build\$(__paket__zen_secp256k1_osx_targets).targets" Condition="Exists('..\..\packages\zen_secp256k1_osx\build\$(__paket__zen_secp256k1_osx_targets).targets')" Label="Paket" />
   <Import Project="..\..\packages\zen_z3_linux\build\zen_z3_linux.targets" Condition="Exists('..\..\packages\zen_z3_linux\build\zen_z3_linux.targets')" Label="Paket" />

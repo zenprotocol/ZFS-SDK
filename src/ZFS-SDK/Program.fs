@@ -7,10 +7,6 @@ let LOG_TYPES_FLAG =
     "--log_types"
 
 [<Literal>]
-let LOG_QUERIES_FLAG =
-    "--log_queries"
-
-[<Literal>]
 let DEFAULT_Z3RLIMIT =
     2723280u
 
@@ -19,10 +15,6 @@ let (>>=) x f =
 
 let handle_log_types<'a> : Option<'a> -> string =
     Option.map (fun _ -> LOG_TYPES_FLAG)
-    >> Option.defaultValue ""
-
-let handle_log_queries<'a> : Option<'a> -> string =
-    Option.map (fun _ -> LOG_QUERIES_FLAG)
     >> Option.defaultValue ""
 
 
@@ -39,10 +31,6 @@ module Strings =
     [<Literal>]
     let LOG_TYPES =
         "Log types"
-    
-    [<Literal>]
-    let LOG_QUERIES =
-        "Log Z3 queries"
     
     [<Literal>]
     let NUM_OF_BLOCKS =
@@ -92,8 +80,6 @@ module Elaborate =
             Z3rlimit of rlimit:uint32
         | [<Unique ; AltCommandLine("-t")>]
             Log_Types
-        | [<Unique ; AltCommandLine("-q")>]
-            Log_Queries
         with
             interface IArgParserTemplate with
                 member s.Usage =
@@ -104,8 +90,6 @@ module Elaborate =
                         Strings.Z3RLIMIT
                     | Log_Types ->
                         Strings.LOG_TYPES
-                    | Log_Queries ->
-                        Strings.LOG_QUERIES
     
     
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
@@ -125,11 +109,8 @@ module Elaborate =
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
             
-            let logqueries =
-                handle_log_queries <| args.TryGetResult(Log_Queries)
-            
             ZFS.elab_file filename
-            >>= ZFS.verify z3rlimit [logtypes; logqueries]
+            >>= ZFS.verify z3rlimit [logtypes]
 
 
 
@@ -142,8 +123,6 @@ module Verify =
             Z3rlimit of rlimit:uint32
         | [<Unique ; AltCommandLine("-t")>]
             Log_Types
-        | [<Unique ; AltCommandLine("-q")>]
-            Log_Queries
         with
             interface IArgParserTemplate with                
                 member s.Usage =
@@ -154,8 +133,6 @@ module Verify =
                         Strings.Z3RLIMIT
                     | Log_Types ->
                         Strings.LOG_TYPES
-                    | Log_Queries ->
-                        Strings.LOG_QUERIES
     
     
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
@@ -175,10 +152,7 @@ module Verify =
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
             
-            let logqueries =
-                handle_log_queries <| args.TryGetResult(Log_Queries)
-            
-            ZFS.verify z3rlimit [logtypes; logqueries] filename
+            ZFS.verify z3rlimit [logtypes] filename
 
 
 
@@ -191,8 +165,6 @@ module Extract =
             Z3rlimit of rlimit:uint32
         | [<Unique ; AltCommandLine("-t")>]
             Log_Types
-        | [<Unique ; AltCommandLine("-q")>]
-            Log_Queries
         with
             interface IArgParserTemplate with
                 member s.Usage =
@@ -203,8 +175,6 @@ module Extract =
                         Strings.Z3RLIMIT
                     | Log_Types ->
                         Strings.LOG_TYPES
-                    | Log_Queries ->
-                        Strings.LOG_QUERIES
     
     
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
@@ -224,11 +194,8 @@ module Extract =
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
             
-            let logqueries =
-                handle_log_queries <| args.TryGetResult(Log_Queries)
-            
             ZFS.elab_file filename
-            >>= ZFS.extract z3rlimit [logtypes; logqueries]
+            >>= ZFS.extract z3rlimit [logtypes]
 
 
 
@@ -241,8 +208,6 @@ module Compile =
             Z3rlimit of rlimit:uint32
         | [<Unique ; AltCommandLine("-t")>]
             Log_Types
-        | [<Unique ; AltCommandLine("-q")>]
-            Log_Queries
         with
             interface IArgParserTemplate with
                 member s.Usage =
@@ -253,8 +218,6 @@ module Compile =
                         Strings.Z3RLIMIT
                     | Log_Types ->
                         Strings.LOG_TYPES
-                    | Log_Queries ->
-                        Strings.LOG_QUERIES
     
     
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
@@ -274,11 +237,8 @@ module Compile =
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
             
-            let logqueries =
-                handle_log_queries <| args.TryGetResult(Log_Queries)
-            
             ZFS.elab_file filename
-            >>= ZFS.extract z3rlimit [logtypes; logqueries]
+            >>= ZFS.extract z3rlimit [logtypes]
             >>= ZFS.compile
 
 

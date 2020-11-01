@@ -398,6 +398,41 @@ module ACost =
 
 
 
+module Info =
+    
+    type Arg =
+        | [<MainCommand ; ExactlyOnce>]
+            Filename of filename:string
+        | [<Unique ; AltCommandLine("-z")>]
+            Z3rlimit of rlimit:uint32
+        with
+            interface IArgParserTemplate with
+                member s.Usage =
+                    match s with
+                    | Filename    _ ->
+                        sprintf Strings.FILENAME "contract"
+                    | Z3rlimit    _ ->
+                        Strings.Z3RLIMIT
+    
+    
+    let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
+        
+        if List.isEmpty <| args.GetAllResults() then
+            
+            Ok <| parser.PrintUsage()
+            
+        else
+            
+            let filename =
+                args.GetResult(Filename)
+            
+            let z3rlimit =
+                args.TryGetResult(Z3rlimit)
+                |> Option.defaultValue DEFAULT_Z3RLIMIT
+        
+            ZFS.getInfo z3rlimit filename
+
+
 type Command =
     | [<CliPrefix(CliPrefix.None)>]
         Create of ParseResults<Create.Arg>
@@ -419,6 +454,8 @@ type Command =
         ContractId of ParseResults<ContractId.Arg>
     | [<CliPrefix(CliPrefix.None); AltCommandLine("ac")>]
         ACost of ParseResults<ACost.Arg>
+    | [<CliPrefix(CliPrefix.None); AltCommandLine("i")>]
+        Info of ParseResults<Info.Arg>
     with
         interface IArgParserTemplate with
             member s.Usage =
@@ -443,6 +480,8 @@ type Command =
                     "Compute contract ID."
                 | ACost _ ->
                     "Compute activation cost."
+                | Info _ ->
+                    "Get contract information"
 
 
 
@@ -461,6 +500,7 @@ module Parser =
     let Run_Fsx      = parser.GetSubCommandParser Run_Fsx
     let ContractId   = parser.GetSubCommandParser ContractId
     let ACost        = parser.GetSubCommandParser ACost
+    let Info         = parser.GetSubCommandParser Info
 
 
 let usage =
@@ -479,6 +519,7 @@ let handleCommand =
     | Run_Fsx      args -> Run_Fsx      .handle Parser.Run_Fsx      args
     | ContractId   args -> ContractId   .handle Parser.ContractId   args
     | ACost        args -> ACost        .handle Parser.ACost        args
+    | Info         args -> Info         .handle Parser.Info         args
 
 
 let handleResults (results : ParseResults<Command>) : Result<string, string> =

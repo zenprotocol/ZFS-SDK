@@ -80,7 +80,7 @@ module ActivationCost =
                 chain.sacrificePerByteBlock * codeLength
             
             let activationSacrifice =
-                chain.sacrificePerByteBlock * codeLength * (uint64 numberOfBlocks)
+                chain.sacrificePerByteBlock * codeLength * uint64 numberOfBlocks
 
             return {
                 activationFee       = activationFee

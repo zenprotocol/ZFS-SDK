@@ -210,7 +210,7 @@ let activationCost (z3rlimit : uint32) (fst_file : string) (numberOfBlocks : uin
     }
 
 
-let getInfo (rlimit : uint32) (fst_file : string) : Result<string , string> =
+let getInfo (rlimit : uint32) (fst_file : string) : Result<string, string> =
     
     let code =
         File.ReadAllText fst_file

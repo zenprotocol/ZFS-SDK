@@ -10,6 +10,7 @@ Consensus
 Infrastructure
 Zulib
 Argu
+NUnit
 
 zen_z3_linux
 zen_secp256k1_osx

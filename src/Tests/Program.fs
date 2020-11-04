@@ -78,7 +78,13 @@ module Create =
         System.IO.File.Delete NEW_CREATED_FILENAME
     
     [<Test>]
+    let ``Created file should be created`` () =
+        if not <| System.IO.File.Exists NEW_CREATED_FILENAME then
+            failwithf "Can't find %s - file wasn't created" NEW_CREATED_FILENAME
+    
+    [<Test>]
     let ``Created file should be as expected`` () =
+        
         compareTextFiles ORIGINAL_CREATED_FILENAME NEW_CREATED_FILENAME 
 
 
@@ -90,6 +96,9 @@ module Elaborate =
     let ORIGINAL_ELABORATED_CONTRACT_FILENAME =
         "NamedToken_Elaborated.fst"
     
+    let newElaboratedFilename =
+        System.IO.Path.Combine [| OUTPUT_DIR ; CONTRACT_FILENAME |]
+    
     [<SetUp>]
     let SetUp () = ()
     
@@ -100,19 +109,22 @@ module Elaborate =
     let OneTimeSetUp () =
         
         initialize()
-    
-    [<OneTimeTearDown>]
-    let OneTimeTearDown () =
-        System.IO.Directory.Delete ( OUTPUT_DIR , true )
-    
-    [<Test>]
-    let ``Elaborated file should be as expected`` () =
         
         if Program.main [| "elaborate" ; CONTRACT_FILENAME |] <> 0 then
             failwith "Elaboration failed"
+    
+    [<OneTimeTearDown>]
+    let OneTimeTearDown () =
         
-        let newElaboratedFilename =
-            System.IO.Path.Combine [| OUTPUT_DIR ; CONTRACT_FILENAME |]
+        System.IO.Directory.Delete ( OUTPUT_DIR , true )
+    
+    [<Test>]
+    let ``Elaborated file should be created`` () =
+        if not <| System.IO.File.Exists newElaboratedFilename then
+            failwithf "Can't find %s - elaborated file wasn't created" newElaboratedFilename
+    
+    [<Test>]
+    let ``Elaborated file should be as expected`` () =
         
         compareTextFiles ORIGINAL_ELABORATED_CONTRACT_FILENAME newElaboratedFilename
 
@@ -144,6 +156,9 @@ module Extract =
     let ORIGINAL_EXTRACTED_CONTRACT_FILENAME =
         "NamedToken_Extracted.fs"
     
+    let newExtractedFilename =
+        System.IO.Path.Combine [| OUTPUT_DIR ; System.IO.Path.ChangeExtension ( CONTRACT_FILENAME , "fs" ) |]
+    
     [<SetUp>]
     let SetUp () = ()
     
@@ -154,19 +169,21 @@ module Extract =
     let OneTimeSetUp () =
         
         initialize()
+        
+        if Program.main [| "extract" ; CONTRACT_FILENAME |] <> 0 then
+            failwith "Extraction failed"
     
     [<OneTimeTearDown>]
     let OneTimeTearDown () =
         System.IO.Directory.Delete ( OUTPUT_DIR , true )
     
     [<Test>]
+    let ``Extracted file should be created`` () =
+        if not <| System.IO.File.Exists newExtractedFilename then
+            failwithf "Can't find %s - extracted file wasn't created" newExtractedFilename
+    
+    [<Test>]
     let ``Extracted file should be as expected`` () =
-        
-        if Program.main [| "extract" ; CONTRACT_FILENAME |] <> 0 then
-            failwith "Extraction failed"
-        
-        let newExtractedFilename =
-            System.IO.Path.Combine [| OUTPUT_DIR ; System.IO.Path.ChangeExtension ( CONTRACT_FILENAME , "fs" ) |]
         
         compareTextFiles ORIGINAL_EXTRACTED_CONTRACT_FILENAME newExtractedFilename
 
@@ -175,6 +192,9 @@ module Extract =
 [<TestFixture>]
 module Compile =
     
+    let compiledFilename =
+        System.IO.Path.Combine [| OUTPUT_DIR ; System.IO.Path.ChangeExtension ( CONTRACT_FILENAME , "dll" ) |]
+    
     [<SetUp>]
     let SetUp () = ()
     
@@ -185,6 +205,9 @@ module Compile =
     let OneTimeSetUp () =
         
         initialize()
+        
+        if Program.main [| "compile" ; CONTRACT_FILENAME |] <> 0 then
+            failwith "Compilation failed"
     
     [<OneTimeTearDown>]
     let OneTimeTearDown () =
@@ -192,12 +215,6 @@ module Compile =
     
     [<Test>]
     let ``Compiled file should be created`` () =
-        
-        if Program.main [| "compile" ; CONTRACT_FILENAME |] <> 0 then
-            failwith "Compilation failed"
-        
-        let compiledFilename =
-            System.IO.Path.Combine [| OUTPUT_DIR ; System.IO.Path.ChangeExtension ( CONTRACT_FILENAME , "dll" ) |]
         
         if not <| System.IO.File.Exists compiledFilename then
             failwithf "Can't find %s - compiled file wasn't created" compiledFilename
@@ -291,6 +308,10 @@ module Run_FSX =
 [<TestFixture>]
 module ContractId =
     
+    [<Literal>]
+    let expectedCid =
+        "000000001d816175e1d8dca2f4e4fe33c963612ad28aee62dd55f31d2f685a113fe3d306"
+    
     [<SetUp>]
     let SetUp () =
         System.IO.Directory.SetCurrentDirectory TestsContractsDir
@@ -299,16 +320,40 @@ module ContractId =
     let TeardDown () = ()
     
     [<OneTimeSetUp>]
-    let OneTimeSetUp () = ()
+    let OneTimeSetUp () =
+        
+        initialize()
     
     [<OneTimeTearDown>]
     let OneTimeTearDown () = ()
+    
+    [<Test>]
+    let ``Contract ID should be as expected`` () =
+        
+        let args =
+            Program.Parser.ContractId.Parse [| CONTRACT_FILENAME |]
+        
+        match ContractId.handle Program.Parser.ContractId args with
+        | Error msg ->
+            failwithf "Contract ID calculation failed - %s" msg
+        | Ok cid ->
+            if cid <> expectedCid then
+                failwithf "Contract ID wasn't as expected - expected: %s ; got: %s" expectedCid cid
 
 
 
 [<TestFixture>]
 module ActivationCost =
     
+    let expectedCost : Extra.ActivationCost.ActivationCost =
+        {
+            activationFee       = 925915UL
+            baseSacrifice       = 1218UL
+            activationSacrifice = 1218UL
+            numOfBlocks         = 1u
+            total               = 927133UL
+        }
+    
     [<SetUp>]
     let SetUp () =
         System.IO.Directory.SetCurrentDirectory TestsContractsDir
@@ -317,10 +362,25 @@ module ActivationCost =
     let TeardDown () = ()
     
     [<OneTimeSetUp>]
-    let OneTimeSetUp () = ()
+    let OneTimeSetUp () =
+        
+        initialize()
     
     [<OneTimeTearDown>]
     let OneTimeTearDown () = ()
+    
+    [<Test>]
+    let ``Activation cost should be as expected`` () =
+        
+        let code =
+            System.IO.File.ReadAllText Pack.ORIGINAL_PACKED_FILENAME
+        
+        match Extra.ActivationCost.compute Consensus.Chain.mainParameters Program.DEFAULT_Z3RLIMIT 1ul code with
+        | Error msg ->
+            failwithf "Activation cost calculation failed - %s" msg
+        | Ok cost ->
+            if cost <> expectedCost then
+                failwithf "Cost wasn't as expected - expected: %A ; got: %A" expectedCost cost
 
 
 
@@ -335,7 +395,9 @@ module Info =
     let TeardDown () = ()
     
     [<OneTimeSetUp>]
-    let OneTimeSetUp () = ()
+    let OneTimeSetUp () =
+        
+        initialize()
     
     [<OneTimeTearDown>]
     let OneTimeTearDown () = ()

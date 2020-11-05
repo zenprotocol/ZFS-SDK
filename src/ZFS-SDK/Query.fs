@@ -1,10 +1,16 @@
-module Extra
+module Query
 
 open Consensus
 open Consensus.Chain
 open Consensus.Types
 open FSharp.Data
 open Infrastructure
+
+
+
+let result = Result.result
+
+
 
 module ContractId =
 
@@ -16,6 +22,13 @@ module ContractId =
 
     let makeContractId version code =
         ContractId (version, computeHash version code)
+    
+    let run (filename : string) : Result<string, string> =
+        filename
+        |> System.IO.File.ReadAllText
+        |> makeContractId 0u
+        |> sprintf "%A" 
+        |> Ok
 
 
 
@@ -42,14 +55,14 @@ module Info =
             |]
 
     let compute (z3rlimit : uint32) (code : string) : Result<ContractV0 , string> =
-        Infrastructure.Result.result {
-
+        result {
+            
             let! hints =
                 recordHints z3rlimit code
-
+            
             let! queries =
                 ZFStar.totalQueries hints
-
+            
             return {
                 code    = code
                 rlimit  = z3rlimit
@@ -57,6 +70,12 @@ module Info =
                 queries = queries
             }
         }
+    
+    let run (rlimit : uint32) (filename : string) : Result<string, string> =
+        filename
+        |> System.IO.File.ReadAllText
+        |> compute rlimit
+        |> Result.map (toJson >> string)
 
 
 
@@ -100,3 +119,27 @@ module ActivationCost =
                 total               = activationFee + activationSacrifice
             }
         }
+    
+    let run (z3rlimit : uint32) (numberOfBlocks : uint32) (filename : string) : Result<string, string> =
+        result {
+            
+            let code =
+                System.IO.File.ReadAllText filename
+            
+            let! cost =
+                compute Consensus.Chain.mainParameters z3rlimit numberOfBlocks code
+            
+            return (sprintf "%A" cost)
+            
+        }
+
+
+
+let contractId =
+    ContractId.run
+
+let activationCost =
+    ActivationCost.run
+
+let info =
+    Info.run

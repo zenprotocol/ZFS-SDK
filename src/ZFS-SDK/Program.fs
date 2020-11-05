@@ -109,8 +109,9 @@ module Elaborate =
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
             
-            ZFS.elab_file filename
-            >>= ZFS.verify z3rlimit [logtypes]
+            Ok filename
+            >>= ZFStar.elaborate
+            >>= ZFStar.verify z3rlimit [logtypes]
 
 
 
@@ -152,7 +153,8 @@ module Verify =
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
             
-            ZFS.verify z3rlimit [logtypes] filename
+            Ok filename
+            >>= ZFStar.verify z3rlimit [logtypes]
 
 
 
@@ -194,8 +196,9 @@ module Extract =
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
             
-            ZFS.elab_file filename
-            >>= ZFS.extract z3rlimit [logtypes]
+            Ok filename
+            >>= ZFStar.elaborate 
+            >>= ZFStar.extract z3rlimit [logtypes]
 
 
 
@@ -237,9 +240,10 @@ module Compile =
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
             
-            ZFS.elab_file filename
-            >>= ZFS.extract z3rlimit [logtypes]
-            >>= ZFS.compile
+            Ok filename
+            >>= ZFStar.elaborate
+            >>= ZFStar.extract z3rlimit [logtypes]
+            >>= ZFStar.compile
 
 
 
@@ -267,7 +271,7 @@ module Pack =
             let filename =
                 args.GetResult(Filename)
             
-            ZFS.pack filename
+            ZFStar.pack filename
 
 
 
@@ -292,10 +296,31 @@ module Generate_Fsx =
             
         else
             
-            let filename =
+            let contract_filename =
                 args.GetResult(Filename)
             
-            Fsx.generate filename
+            let contract_code =
+                contract_filename
+                |> System.IO.File.ReadAllText
+            
+            let module_name =
+                contract_filename
+                |> ASTUtils.parse_file
+                |> ASTUtils.get_module_name
+            
+            let script_filename =
+                System.IO.Path.ChangeExtension
+                    ( path = contract_filename , extension = ".fsx" )  
+            
+            let script_code =
+                FSX.generate module_name contract_code
+            
+            System.IO.File.WriteAllText
+                ( path = script_filename , contents = script_code )
+            
+            sprintf "Generated. to run:\nzebra -r %s" script_filename
+            |> Ok
+
 
 
 
@@ -323,7 +348,7 @@ module Run_Fsx =
             let filename =
                 args.GetResult(Filename)
             
-            Fsx.run filename
+            Execute.fsx filename
 
 
 
@@ -351,7 +376,7 @@ module ContractId =
             let filename =
                 args.GetResult(Filename)
             
-            ZFS.contractId filename
+            Query.contractId filename
 
 
 
@@ -394,7 +419,7 @@ module ACost =
                 args.TryGetResult(Z3rlimit)
                 |> Option.defaultValue DEFAULT_Z3RLIMIT
             
-            ZFS.activationCost z3rlimit filename numOfBlocks
+            Query.activationCost z3rlimit numOfBlocks filename
 
 
 
@@ -429,8 +454,8 @@ module Info =
             let z3rlimit =
                 args.TryGetResult(Z3rlimit)
                 |> Option.defaultValue DEFAULT_Z3RLIMIT
-        
-            ZFS.getInfo z3rlimit filename
+            
+            Query.info z3rlimit filename
 
 
 type Command =

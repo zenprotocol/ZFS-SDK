@@ -1,4 +1,6 @@
+module ScriptTemplate
 
+let TEMPLATE : Printf.StringFormat<string -> string -> string> = "
 open Consensus
 open Types
 open Zen.Types.Data
@@ -8,13 +10,13 @@ open Infrastructure
 module Cost = Zen.Cost.Realized
 
 // Contract Arguments
-let contractId = ContractId (Version0, Hash.fromString "1d816175e1d8dca2f4e4fe33c963612ad28aee62dd55f31d2f685a113fe3d306" |> Result.get)
+let contractId = ContractId (Version0, Hash.fromString \"%s\" |> Result.get)
 
-let contractFn, costFn = System.Reflection.Assembly.LoadFrom "output/NamedToken.dll"
+let contractFn, costFn = System.Reflection.Assembly.LoadFrom \"%s\"
                          |> Contract.getFunctions
                          |> Result.get
 
-let command = ""
+let command = \"\"
 let sender = Anonymous
 let wallet : list<PointedOutput> = []
 let context = {blockNumber=1ul;timestamp=0UL}
@@ -23,7 +25,7 @@ let context = {blockNumber=1ul;timestamp=0UL}
 let returnAddress = PK Hash.zero |> ZFStar.fsToFstLock |> Lock
 
 let data =
-    Zen.Dictionary.add "returnAddress"B returnAddress Zen.Dictionary.empty
+    Zen.Dictionary.add \"returnAddress\"B returnAddress Zen.Dictionary.empty
     |> Cost.__force
     |> Dict
     |> Collection
@@ -47,6 +49,11 @@ let state : data option = None
 
 match contractFn tx context contractId command sender data wallet state with
 | Ok (tx, message, stateUpdate) ->
-    printfn "main fn result:\n tx: %A\n message: %A\n state update: %A" tx message stateUpdate
+    printfn \"main fn result:\\n tx: %%A\\n message: %%A\\n state update: %%A\" tx message stateUpdate
 | Error error ->
-    printfn "main fn error: %A" error
+    printfn \"main fn error: %%A\" error
+"
+
+
+let generateScriptCode contractHash assemblyPath =
+    sprintf TEMPLATE contractHash assemblyPath

@@ -224,31 +224,31 @@ module Compile =
 
 [<TestFixture>]
 module Pack =
-
+    
     [<Literal>]
     let ORIGINAL_PACKED_FILENAME =
         "NamedToken_Packed.fst"
-
+    
     [<Literal>]
     let NEW_PACKED_FILENAME =
         "Za999559e8567e7707e508890ca5a390fea808f2db35fc6a92cc639ad59ad28d9.fst"
-
+    
     let mutable packedFilename = ""
-
+    
     [<SetUp>]
     let SetUp () = ()
-
+    
     [<TearDown>]
     let TeardDown () = ()
-
+    
     [<OneTimeSetUp>]
     let OneTimeSetUp () =
-
+        
         initialize()
-
+        
         let args =
             Program.Parser.Pack.Parse [| CONTRACT_FILENAME |]
-
+        
         match Pack.handle Program.Parser.Pack args with
         | Error msg ->
             failwithf "Compilation failed - %s" msg
@@ -370,7 +370,7 @@ module ContractId =
 [<TestFixture>]
 module ActivationCost =
 
-    let expectedCost : Extra.ActivationCost.ActivationCost =
+    let expectedCost : Query.ActivationCost.ActivationCost =
         {
             activationFee       = 925915UL
             baseSacrifice       = 1218UL
@@ -400,7 +400,7 @@ module ActivationCost =
         let code =
             System.IO.File.ReadAllText Pack.ORIGINAL_PACKED_FILENAME
 
-        match Extra.ActivationCost.compute Consensus.Chain.mainParameters Program.DEFAULT_Z3RLIMIT 1ul code with
+        match Query.ActivationCost.compute Consensus.Chain.mainParameters Program.DEFAULT_Z3RLIMIT 1ul code with
         | Error msg ->
             failwithf "Activation cost calculation failed - %s" msg
         | Ok cost ->
@@ -433,16 +433,16 @@ module Info =
 
     [<Test>]
     let ``Info should be as expected`` () =
-
+        
         let expectedFile =
             System.IO.File.ReadAllText EXPECTED_INFO_FILENAME
-
+        
         let expectedJson =
             JsonValue.Parse expectedFile
-
+        
         let expectedProperties =
             expectedJson.Properties()
-
+        
         let expectedInfo : Consensus.Types.ContractV0 =
             {
                 code    = match (snd expectedProperties.[0]) with | JsonValue.String s -> s        | _ -> failwith "impossible"
@@ -450,16 +450,16 @@ module Info =
                 hints   = match (snd expectedProperties.[2]) with | JsonValue.String s -> s        | _ -> failwith "impossible"
                 queries = match (snd expectedProperties.[3]) with | JsonValue.String s -> uint32 s | _ -> failwith "impossible"
             }
-
+        
         let code =
             System.IO.File.ReadAllText Pack.ORIGINAL_PACKED_FILENAME
         
         let info =
-            match Extra.Info.compute Program.DEFAULT_Z3RLIMIT code with
+            match Query.Info.compute Program.DEFAULT_Z3RLIMIT code with
             | Error msg ->
                 failwithf "Couldn't compute contract info - %s" msg
             | Ok info ->
                 info
-
+        
         if info <> expectedInfo then
             failwithf "Cost wasn't as expected - expected: %A ; got: %A" expectedInfo info

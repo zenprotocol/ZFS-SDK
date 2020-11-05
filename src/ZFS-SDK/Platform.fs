@@ -1,32 +1,33 @@
 module Platform
 
-open System.IO
-open System.Text
-open System.Diagnostics
 open System
 
 open Infrastructure
 
 open System.Runtime.InteropServices
 [<DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true )>]
-extern uint16 GetShortPathName(
-    string lpszLongPath,
-    StringBuilder lpszShortPath,
-    uint16 cchBuffer)
+extern uint16 GetShortPathName
+    ( string lpszLongPath
+    , Text.StringBuilder lpszShortPath
+    , uint16 cchBuffer
+    )
 
 
 
-let platform =
-    if (Environment.OSVersion.Platform = PlatformID.Unix
-        && Directory.Exists "/Applications"
-        && Directory.Exists "/System"
-        && Directory.Exists "/Users"
-        && Directory.Exists "/Volumes")
-            then PlatformID.MacOSX
+let platform : PlatformID =
+    if begin
+        true
+        && Environment.OSVersion.Platform = PlatformID.Unix
+        && IO.Directory.Exists "/Applications"
+        && IO.Directory.Exists "/System"
+        && IO.Directory.Exists "/Users"
+        && IO.Directory.Exists "/Volumes"
+        end
+    then PlatformID.MacOSX
     else Environment.OSVersion.Platform
 
 
-let isUnix =
+let isUnix : bool =
     match platform with
     | PlatformID.Unix
     | PlatformID.MacOSX ->
@@ -35,60 +36,57 @@ let isUnix =
         false
 
 
-let normalizeNameToFileSystem =
+let normalizeNameToFileSystem (filename : string) : string =
     if isUnix then
-        id
+        filename
     else
-        fun fileName ->
-            let bufferSize = uint16 256
-            let shortNameBuffer = StringBuilder((int)bufferSize)
-            GetShortPathName(fileName, shortNameBuffer, bufferSize) |> ignore
-            shortNameBuffer.ToString()
+        let bufferSize = uint16 256
+        let shortNameBuffer = Text.StringBuilder(int bufferSize)
+        GetShortPathName(filename, shortNameBuffer, bufferSize) |> ignore
+        shortNameBuffer.ToString()
 
 
-let workingDirectory =
-    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
+let workingDirectory : string =
+    IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)
     |> normalizeNameToFileSystem
 
 
-let runNative exe args =
+let runNative (exe : String) (args : seq<string>) : Result<unit , string> =
     
-    let p =
-        new Process();
+    let proc =
+        new Diagnostics.Process();
     
-    p.StartInfo <-
-        ProcessStartInfo(
-            FileName = exe,
-            Arguments = String.concat " " args,
-            WorkingDirectory = workingDirectory,
-            RedirectStandardOutput = true,
-            RedirectStandardError = true,
-            UseShellExecute = false)
+    proc.StartInfo <-
+        Diagnostics.ProcessStartInfo
+            ( FileName               = exe
+            , Arguments              = String.concat " " args
+            , WorkingDirectory       = workingDirectory
+            , RedirectStandardOutput = true
+            , RedirectStandardError  = true
+            , UseShellExecute        = false
+            )
     
-    let appender (sb : StringBuilder) =
-        let (+) (sb : StringBuilder) (s : string) = sb.Append s |> ignore
-        fun (args : DataReceivedEventArgs) ->
-            let data = args.Data
-            if not (String.IsNullOrWhiteSpace data) then
-                if sb.Length <> 0 then
-                    sb + Environment.NewLine
-                sb + data
+    let appender (string_builder : Text.StringBuilder) (args : Diagnostics.DataReceivedEventArgs) : unit =
+        if not <| String.IsNullOrWhiteSpace args.Data then
+            if string_builder.Length <> 0 then
+                string_builder.Append Environment.NewLine |> ignore
+            string_builder.Append args.Data |> ignore
     
     let error =
-        StringBuilder()
+        Text.StringBuilder()
     
-    p.ErrorDataReceived.Add(appender error)
+    proc.ErrorDataReceived.Add(appender error)
     
     let output =
-        StringBuilder()
+        Text.StringBuilder()
     
-    p.OutputDataReceived.Add(appender output)
+    proc.OutputDataReceived.Add(appender output)
     
     try
-        if p.Start() then
-            p.BeginErrorReadLine()
-            p.BeginOutputReadLine()
-            p.WaitForExit()
+        if proc.Start() then
+            proc.BeginErrorReadLine()
+            proc.BeginOutputReadLine()
+            proc.WaitForExit()
             let output =
                 output.ToString()
             if output.Length > 0 then
@@ -97,7 +95,7 @@ let runNative exe args =
                 error.ToString()
             if error.Length > 0 then
                 eprintfn "%s" error
-            if p.ExitCode = 0 then
+            if proc.ExitCode = 0 then
                 Ok ()
             else
                 Error (if String.IsNullOrEmpty error then output else error)
@@ -111,7 +109,7 @@ let run exe args =
     
     let monoM =
         if isUnix then
-            List.tryFind File.Exists //TODO: prioritize
+            List.tryFind IO.File.Exists //TODO: prioritize
                 ["/usr/bin/mono"
                  "/usr/local/bin/mono"
                  "/Library/Frameworks/Mono.framework/Versions/Current/Commands/mono"]

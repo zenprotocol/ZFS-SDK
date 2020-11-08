@@ -216,4 +216,4 @@ let getInfo (rlimit : uint32) (fst_file : string) : Result<string, string> =
         File.ReadAllText fst_file
         
     Extra.Info.compute rlimit code
-    |> Result.map (fun x -> x.ToString())
+    |> Result.map (Extra.Info.toJson >> fun json -> json.ToString())

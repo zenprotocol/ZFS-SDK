@@ -3,6 +3,7 @@ module Tests
 open NUnit.Framework
 open Argu
 
+open FSharp.Data
 open Program
 
 
@@ -272,18 +273,41 @@ module Pack =
 [<TestFixture>]
 module Generate_FSX =
     
+    [<Literal>]
+    let ORIGINAL_GENERATED_FILENAME =
+        "NamedToken_Generate.fsx"
+    
+    [<Literal>]
+    let NEW_GENERATED_FILENAME =
+        "NamedToken.fsx"
+    
     [<SetUp>]
-    let SetUp () =
-        System.IO.Directory.SetCurrentDirectory TestsContractsDir
+    let SetUp () = ()
     
     [<TearDown>]
     let TeardDown () = ()
     
     [<OneTimeSetUp>]
-    let OneTimeSetUp () = ()
+    let OneTimeSetUp () =
+        
+        initialize()
+        
+        if Program.main [| "generate-fsx" ; CONTRACT_FILENAME |] <> 0 then
+            failwith "Generation failed"
     
     [<OneTimeTearDown>]
-    let OneTimeTearDown () = ()
+    let OneTimeTearDown () =
+        System.IO.File.Delete NEW_GENERATED_FILENAME
+    
+    [<Test>]
+    let ``Generated file should be created`` () =
+        if not <| System.IO.File.Exists NEW_GENERATED_FILENAME then
+            failwithf "Can't find %s - file wasn't generated" NEW_GENERATED_FILENAME
+    
+    [<Test>]
+    let ``Generated file should be as expected`` () =
+        
+        compareTextFiles ORIGINAL_GENERATED_FILENAME NEW_GENERATED_FILENAME 
 
 
 
@@ -302,6 +326,7 @@ module Run_FSX =
     
     [<OneTimeTearDown>]
     let OneTimeTearDown () = ()
+    
 
 
 
@@ -387,6 +412,10 @@ module ActivationCost =
 [<TestFixture>]
 module Info =
     
+    [<Literal>]
+    let EXPECTED_INFO_FILENAME =
+        "NamedToken_Info.json"
+    
     [<SetUp>]
     let SetUp () =
         System.IO.Directory.SetCurrentDirectory TestsContractsDir
@@ -401,3 +430,36 @@ module Info =
     
     [<OneTimeTearDown>]
     let OneTimeTearDown () = ()
+    
+    [<Test>]
+    let ``Info should be as expected`` () =
+        
+        let expectedFile =
+            System.IO.File.ReadAllText EXPECTED_INFO_FILENAME
+        
+        let expectedJson =
+            JsonValue.Parse expectedFile
+        
+        let expectedProperties =
+            expectedJson.Properties()
+        
+        let expectedInfo : Consensus.Types.ContractV0 =
+            {
+                code    = match (snd expectedProperties.[0]) with | JsonValue.String s -> s        | _ -> failwith "impossible"
+                rlimit  = match (snd expectedProperties.[1]) with | JsonValue.String s -> uint32 s | _ -> failwith "impossible"
+                hints   = match (snd expectedProperties.[2]) with | JsonValue.String s -> s        | _ -> failwith "impossible"
+                queries = match (snd expectedProperties.[3]) with | JsonValue.String s -> uint32 s | _ -> failwith "impossible"
+            }
+        
+        let code =
+            System.IO.File.ReadAllText Pack.ORIGINAL_PACKED_FILENAME
+        
+        let info =
+            match Extra.Info.compute Program.DEFAULT_Z3RLIMIT code with
+            | Error msg ->
+                failwithf "Couldn't compute contract info - %s" msg
+            | Ok info ->
+                info
+        
+        if info <> expectedInfo then
+            failwithf "Cost wasn't as expected - expected: %A ; got: %A" expectedInfo info

@@ -11,6 +11,7 @@ Infrastructure
 Zulib
 Argu
 NUnit
+ContractsTestingLib
 
 zen_z3_linux
 zen_secp256k1_osx

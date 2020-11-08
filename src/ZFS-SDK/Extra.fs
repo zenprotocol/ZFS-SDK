@@ -3,6 +3,7 @@ module Extra
 open Consensus
 open Consensus.Chain
 open Consensus.Types
+open FSharp.Data
 open Infrastructure
 
 module ContractId =
@@ -31,7 +32,16 @@ module Info =
         |> getModuleName
         |> ZFStar.recordHints rlimit code
     
-    let compute (z3rlimit : uint32) (code : string) : Result<Consensus.Types.ContractV0 , string> =
+    let toJson (contract : ContractV0) : JsonValue =
+        JsonValue.Record
+            [|
+                ( "code"    , JsonValue.String <|        contract.code    )
+                ( "rlimit"  , JsonValue.String <| string contract.rlimit  )
+                ( "hints"   , JsonValue.String <|        contract.hints   )
+                ( "queries" , JsonValue.String <| string contract.queries )
+            |]
+    
+    let compute (z3rlimit : uint32) (code : string) : Result<ContractV0 , string> =
         Infrastructure.Result.result {
             
             let! hints =

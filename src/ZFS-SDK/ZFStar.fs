@@ -72,6 +72,47 @@ let createOutputDir (filename : string) : string =
 
 
 
+module ModuleDetection =
+    
+    open System.Text.RegularExpressions
+    
+    exception BreakException of int
+    
+    let MODULE_PATTERN : Printf.StringFormat<string -> string> =
+        "^.*module\s+%s\s*$"
+    
+    let HEADER_PATTERN : string =
+        "^.*module\s+\w+\s*$"
+    
+    let hasModule (module_name : string) (line : string) : bool =
+        Regex.IsMatch( input = line , pattern = sprintf MODULE_PATTERN module_name )
+    
+    let getModuleLineIndex (module_name : string) (lines : string[]) : int =
+        try
+            for i in 0 .. lines.Length - 1 do
+                if hasModule module_name lines.[i] then
+                    raise (BreakException i)    // Sorry, that's the only nice way to break a loop
+            -1
+        with BreakException i ->
+            i
+    
+    let hasModuleHeader (code : string) : bool =
+        Regex.IsMatch( input = code , pattern = HEADER_PATTERN , options = RegexOptions.Multiline )
+    
+    let checkModuleHeader (code : string) : Result<unit , string> =
+        if hasModuleHeader code then
+            Ok()
+        else
+            Error "The contract must have a module header"
+    
+    let checkNoModuleHeader (code : string) : Result<unit , string> =
+        if hasModuleHeader code then
+            Error "The contract shouldn't have a module header"
+        else
+            Ok()
+
+
+
 module private AST =
     
     let parse (filename : string) : Result<AST , string> =
@@ -108,6 +149,11 @@ module Elaborate =
         
         result {
             
+            let code =
+                System.IO.File.ReadAllText filename
+            
+            return! ModuleDetection.checkModuleHeader code
+            
             log "Parsing %s ..." (Path.GetFileName filename)
             
             let! ast =
@@ -139,6 +185,11 @@ module Verify =
     let run (z3rlimit : uint32 option) (args : string list) (filename : string) : Result<string, string> =
         
         result {
+            
+            let code =
+                System.IO.File.ReadAllText filename
+            
+            return! ModuleDetection.checkModuleHeader code
             
             return! run_zfs z3rlimit args filename
             
@@ -236,25 +287,6 @@ module Compile =
 
 module Pack =
     
-    open System.Text.RegularExpressions
-    
-    exception BreakException of int
-    
-    let MODULE_PATTERN : Printf.StringFormat<string -> string> =
-        "^.*module\s+%s\s*$"
-    
-    let hasModule (module_name : string) (line : string) : bool =
-        Regex.IsMatch( input = line , pattern = sprintf MODULE_PATTERN module_name )
-    
-    let getModuleLineIndex (module_name : string) (lines : string[]) : int =
-        try
-            for i in 0 .. lines.Length - 1 do
-                if hasModule module_name lines.[i] then
-                    raise (BreakException i)    // Sorry, that's the only nice way to break a loop
-            -1
-        with BreakException i ->
-            i
-    
     let run (filename : string) : Result<string , string> =
         result {
             
@@ -268,7 +300,7 @@ module Pack =
                 File.ReadAllLines filename
             
             let module_index =
-                getModuleLineIndex module_name lines
+                ModuleDetection.getModuleLineIndex module_name lines
             
             let lines_without_module =
                 if module_index >= 0 then

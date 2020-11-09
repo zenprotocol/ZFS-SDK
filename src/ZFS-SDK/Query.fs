@@ -17,7 +17,7 @@ module ContractId =
     let computeHash version (code:string) =
         let versionBytes = BigEndianBitConverter.uint32ToBytes version
         let codeBytes = System.Text.Encoding.UTF8.GetBytes code
-
+        
         Consensus.Hash.computeMultiple [versionBytes; codeBytes]
 
     let makeContractId version code =
@@ -56,6 +56,8 @@ module Info =
 
     let compute (z3rlimit : uint32) (code : string) : Result<ContractV0 , string> =
         result {
+            
+            return! ZFStar.ModuleDetection.checkNoModuleHeader code
             
             let! hints =
                 recordHints z3rlimit code

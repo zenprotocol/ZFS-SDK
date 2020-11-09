@@ -58,8 +58,8 @@
     <Compile Include="Platform.fs" />
     <Compile Include="ScriptTemplate.fs" />
     <Compile Include="FSX.fs" />
-    <Compile Include="Query.fs" />
     <Compile Include="ZFStar.fs" />
+    <Compile Include="Query.fs" />
     <Compile Include="ContractTemplate.fs" />
     <Compile Include="Execute.fs" />
     <Compile Include="Program.fs" />

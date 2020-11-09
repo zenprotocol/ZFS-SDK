@@ -10,6 +10,7 @@ Consensus
 Infrastructure
 Zulib
 Argu
+NUnit
 ContractsTestingLib
 
 zen_z3_linux

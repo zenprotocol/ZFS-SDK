@@ -195,19 +195,25 @@ let contractId (fst_file : string) : Result<string, string> =
     let cid =
         Extra.ContractId.makeContractId 0u code
     
-    printfn "%A" cid
-    
     Ok (sprintf "%A" cid)
 
 
 let activationCost (z3rlimit : uint32) (fst_file : string) (numberOfBlocks : uint32) : Result<string, string> =
+    Infrastructure.Result.result {
+        let code =
+            File.ReadAllText fst_file
+        
+        let! cost =
+            Extra.ActivationCost.compute Consensus.Chain.mainParameters z3rlimit numberOfBlocks code
+        
+        return (sprintf "%A" cost)
+    }
+
+
+let getInfo (rlimit : uint32) (fst_file : string) : Result<string, string> =
     
     let code =
         File.ReadAllText fst_file
-    
-    let cost =
-        Extra.ActivationCost.compute Consensus.Chain.mainParameters z3rlimit numberOfBlocks code
-    
-    printfn "%A" cost
-    
-    Ok (sprintf "%A" cost)
+        
+    Extra.Info.compute rlimit code
+    |> Result.map (Extra.Info.toJson >> fun json -> json.ToString())

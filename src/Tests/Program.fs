@@ -12,6 +12,26 @@ let CONTRACT_FILENAME =
     "NamedToken.fst"
 
 [<Literal>]
+let ORIGINAL_PACKED_FILENAME =
+    "NamedToken_Packed.fst"
+
+[<Literal>]
+let ORIGINAL_ELABORATED_CONTRACT_FILENAME =
+    "NamedToken_Elaborated.fst"
+
+[<Literal>]
+let ORIGINAL_CREATED_FILENAME =
+    "OriginalCreate.fst"
+
+[<Literal>]
+let ORIGINAL_EXTRACTED_CONTRACT_FILENAME =
+    "NamedToken_Extracted.fs"
+
+[<Literal>]
+let ORIGINAL_GENERATED_FILENAME =
+    "NamedToken_Generate.fsx"
+
+[<Literal>]
 let OUTPUT_DIR =
     "output"
 
@@ -51,11 +71,7 @@ let compareTextFiles filename1 filename2 =
 
 [<TestFixture>]
 module Create =
-
-    [<Literal>]
-    let ORIGINAL_CREATED_FILENAME =
-        "OriginalCreate.fst"
-
+    
     [<Literal>]
     let NEW_CREATED_FILENAME =
         "Create.fst"
@@ -93,10 +109,6 @@ module Create =
 [<TestFixture>]
 module Elaborate =
 
-    [<Literal>]
-    let ORIGINAL_ELABORATED_CONTRACT_FILENAME =
-        "NamedToken_Elaborated.fst"
-
     let newElaboratedFilename =
         System.IO.Path.Combine [| OUTPUT_DIR ; CONTRACT_FILENAME |]
 
@@ -128,6 +140,12 @@ module Elaborate =
     let ``Elaborated file should be as expected`` () =
 
         compareTextFiles ORIGINAL_ELABORATED_CONTRACT_FILENAME newElaboratedFilename
+    
+    [<Test>]
+    let ``Elaborating contract with no module should fail`` () =
+
+        if Program.main [| "elaborate" ; ORIGINAL_PACKED_FILENAME |] = 0 then
+            failwith "Elaboration succeeded"
 
 
 
@@ -152,11 +170,7 @@ module Verify =
 
 [<TestFixture>]
 module Extract =
-
-    [<Literal>]
-    let ORIGINAL_EXTRACTED_CONTRACT_FILENAME =
-        "NamedToken_Extracted.fs"
-
+    
     let newExtractedFilename =
         System.IO.Path.Combine [| OUTPUT_DIR ; System.IO.Path.ChangeExtension ( CONTRACT_FILENAME , "fs" ) |]
 
@@ -187,6 +201,12 @@ module Extract =
     let ``Extracted file should be as expected`` () =
 
         compareTextFiles ORIGINAL_EXTRACTED_CONTRACT_FILENAME newExtractedFilename
+    
+    [<Test>]
+    let ``Extracting contract with no module should fail`` () =
+
+        if Program.main [| "extract" ; ORIGINAL_PACKED_FILENAME |] = 0 then
+            failwith "Extraction succeeded"
 
 
 
@@ -219,15 +239,17 @@ module Compile =
 
         if not <| System.IO.File.Exists compiledFilename then
             failwithf "Can't find %s - compiled file wasn't created" compiledFilename
+    
+    [<Test>]
+    let ``Compiling contract with no module should fail`` () =
+
+        if Program.main [| "compile" ; ORIGINAL_PACKED_FILENAME |] = 0 then
+            failwith "Compilation succeeded"
 
 
 
 [<TestFixture>]
 module Pack =
-    
-    [<Literal>]
-    let ORIGINAL_PACKED_FILENAME =
-        "NamedToken_Packed.fst"
     
     [<Literal>]
     let NEW_PACKED_FILENAME =
@@ -258,12 +280,12 @@ module Pack =
     [<OneTimeTearDown>]
     let OneTimeTearDown () =
         System.IO.File.Delete NEW_PACKED_FILENAME
-
+    
     [<Test>]
     let ``Packed file name should be as expected`` () =
         if packedFilename <> NEW_PACKED_FILENAME then
             failwithf "Packed filename should be %s but it is %s" NEW_PACKED_FILENAME packedFilename
-
+    
     [<Test>]
     let ``Packed file should be as expected`` () =
         compareTextFiles ORIGINAL_PACKED_FILENAME packedFilename
@@ -272,10 +294,6 @@ module Pack =
 
 [<TestFixture>]
 module Generate_FSX =
-
-    [<Literal>]
-    let ORIGINAL_GENERATED_FILENAME =
-        "NamedToken_Generate.fsx"
 
     [<Literal>]
     let NEW_GENERATED_FILENAME =
@@ -303,11 +321,16 @@ module Generate_FSX =
     let ``Generated file should be created`` () =
         if not <| System.IO.File.Exists NEW_GENERATED_FILENAME then
             failwithf "Can't find %s - file wasn't generated" NEW_GENERATED_FILENAME
-
+    
     [<Test>]
     let ``Generated file should be as expected`` () =
-
         compareTextFiles ORIGINAL_GENERATED_FILENAME NEW_GENERATED_FILENAME
+    
+    [<Test>]
+    let ``Generating fsx for a contract with no module should fail`` () =
+
+        if Program.main [| "generate-fsx" ; ORIGINAL_PACKED_FILENAME |] = 0 then
+            failwith "Generation succeeded"
 
 
 
@@ -398,7 +421,7 @@ module ActivationCost =
     let ``Activation cost should be as expected`` () =
 
         let code =
-            System.IO.File.ReadAllText Pack.ORIGINAL_PACKED_FILENAME
+            System.IO.File.ReadAllText ORIGINAL_PACKED_FILENAME
 
         match Query.ActivationCost.compute Consensus.Chain.mainParameters Program.DEFAULT_Z3RLIMIT 1ul code with
         | Error msg ->
@@ -406,6 +429,13 @@ module ActivationCost =
         | Ok cost ->
             if cost <> expectedCost then
                 failwithf "Cost wasn't as expected - expected: %A ; got: %A" expectedCost cost
+    
+    [<Test>]
+    let ``Computing activation cost for a contract with a module should fail`` () =
+        
+        if Program.main [| "acost" ; CONTRACT_FILENAME |] = 0 then
+            failwith "Computing activation cost succeeded"
+            
 
 
 
@@ -452,7 +482,7 @@ module Info =
             }
         
         let code =
-            System.IO.File.ReadAllText Pack.ORIGINAL_PACKED_FILENAME
+            System.IO.File.ReadAllText ORIGINAL_PACKED_FILENAME
         
         let info =
             match Query.Info.compute Program.DEFAULT_Z3RLIMIT code with
@@ -463,3 +493,10 @@ module Info =
         
         if info <> expectedInfo then
             failwithf "Cost wasn't as expected - expected: %A ; got: %A" expectedInfo info
+    
+    
+    [<Test>]
+    let ``Getting information for a contract with a module should fail`` () =
+        
+        if Program.main [| "info" ; CONTRACT_FILENAME |] = 0 then
+            failwith "Getting info succeeded"

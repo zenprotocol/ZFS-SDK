@@ -56,10 +56,12 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Utils.fs" />
     <Compile Include="Platform.fs" />
-    <Compile Include="Fsx.fs" />
-    <Compile Include="Extra.fs" />
-    <Compile Include="ZFS.fs" />
+    <Compile Include="ScriptTemplate.fs" />
+    <Compile Include="FSX.fs" />
+    <Compile Include="ZFStar.fs" />
+    <Compile Include="Query.fs" />
     <Compile Include="ContractTemplate.fs" />
+    <Compile Include="Execute.fs" />
     <Compile Include="Program.fs" />
     <Content Include="CopyZulib.targets" />
     <Content Include="paket.references" />

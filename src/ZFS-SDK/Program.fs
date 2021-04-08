@@ -18,7 +18,6 @@ let handle_log_types<'a> : Option<'a> -> string =
     >> Option.defaultValue ""
 
 
-
 module Strings =
     
     let FILENAME : Printf.StringFormat<string -> string> =
@@ -35,6 +34,10 @@ module Strings =
     [<Literal>]
     let NUM_OF_BLOCKS =
         "Number of blocks"
+    
+    [<Literal>]
+    let FIELD =
+        "Return info about a specific field"
 
 
 
@@ -430,6 +433,8 @@ module Info =
             Filename of filename:string
         | [<Unique ; AltCommandLine("-z")>]
             Z3rlimit of rlimit:uint32
+        | [<Unique ; AltCommandLine("-f")>]
+            Field of string
         with
             interface IArgParserTemplate with
                 member s.Usage =
@@ -438,6 +443,8 @@ module Info =
                         sprintf Strings.FILENAME "contract"
                     | Z3rlimit    _ ->
                         Strings.Z3RLIMIT
+                    | Field _ ->
+                        Strings.FIELD
     
     
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
@@ -455,7 +462,15 @@ module Info =
                 args.TryGetResult(Z3rlimit)
                 |> Option.defaultValue DEFAULT_Z3RLIMIT
             
-            Query.info z3rlimit filename
+            let field =
+                args.TryGetResult(Field)
+            
+            Query.info z3rlimit field filename
+    
+    module Fields =
+        
+        let handle() =
+            Query.Info.listFields() 
 
 
 type Command =
@@ -481,6 +496,8 @@ type Command =
         ACost of ParseResults<ACost.Arg>
     | [<CliPrefix(CliPrefix.None); AltCommandLine("i")>]
         Info of ParseResults<Info.Arg>
+    | [<CliPrefix(CliPrefix.None)>]
+        Fields
     with
         interface IArgParserTemplate with
             member s.Usage =
@@ -507,6 +524,8 @@ type Command =
                     "Compute activation cost."
                 | Info _ ->
                     "Get contract information"
+                | Fields ->
+                    "List possible info fields"
 
 
 
@@ -545,6 +564,7 @@ let handleCommand =
     | ContractId   args -> ContractId   .handle Parser.ContractId   args
     | ACost        args -> ACost        .handle Parser.ACost        args
     | Info         args -> Info         .handle Parser.Info         args
+    | Fields            -> Info.Fields  .handle()
 
 
 let handleResults (results : ParseResults<Command>) : Result<string, string> =

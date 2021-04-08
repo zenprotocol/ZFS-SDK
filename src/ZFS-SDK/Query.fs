@@ -24,11 +24,19 @@ module ContractId =
         ContractId (version, computeHash version code)
     
     let run (filename : string) : Result<string, string> =
-        filename
-        |> System.IO.File.ReadAllText
-        |> makeContractId 0u
-        |> sprintf "%A" 
-        |> Ok
+        result {
+            let code =
+                filename
+                |> System.IO.File.ReadAllText
+            
+            return! ZFStar.ModuleDetection.checkNoModuleHeader code
+            
+            return!
+                code
+                |> makeContractId 0u
+                |> sprintf "%A" 
+                |> Ok
+        }
 
 
 

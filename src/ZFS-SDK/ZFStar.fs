@@ -290,6 +290,11 @@ module Pack =
     let run (filename : string) : Result<string , string> =
         result {
             
+            let code =
+                System.IO.File.ReadAllText filename
+            
+            return! ModuleDetection.checkModuleHeader code
+            
             let! ast =
                 AST.parse filename
             

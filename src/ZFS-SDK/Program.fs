@@ -22,7 +22,7 @@ let handle_log_types<'a> : Option<'a> -> string =
 module Strings =
     
     let FILENAME : Printf.StringFormat<string -> string> =
-        "File name of the %s"
+        "file name of the %s"
     
     [<Literal>]
     let Z3RLIMIT =
@@ -30,11 +30,11 @@ module Strings =
     
     [<Literal>]
     let LOG_TYPES =
-        "Log types"
+        "log types"
     
     [<Literal>]
     let NUM_OF_BLOCKS =
-        "Number of blocks"
+        "number of blocks"
 
 
 
@@ -66,7 +66,7 @@ module Create =
                 ContractTemplate.code filename
             
             System.IO.File.WriteAllText(filename, code)
-            Utils.log "Created %s" filename
+            Utils.log "created %s" filename
             Ok filename
 
 
@@ -318,7 +318,7 @@ module Generate_Fsx =
             System.IO.File.WriteAllText
                 ( path = script_filename , contents = script_code )
             
-            sprintf "Generated. to run:\nzebra -r %s" script_filename
+            sprintf "generated. to run:\nzebra -r %s" script_filename
             |> Ok
 
 
@@ -486,27 +486,27 @@ type Command =
             member s.Usage =
                 match s with
                 | Create _ ->
-                    "Create a new template contract"
+                    "create a new template contract"
                 | Elaborate _ ->
-                    "Elaborate the source File and verify"
+                    "elaborate the source File and verify"
                 | Verify _ ->
-                    "Verify the source file"
+                    "verify the source file"
                 | Extract _ ->
-                    "Extract the source file"
+                    "extract the source file"
                 | Compile _ ->
-                    "Compile from source file"
+                    "compile from source file"
                 | Pack _ ->
-                    "Pack the contract to be activated on zen blockchain"
+                    "pack the contract to be activated on zen blockchain"
                 | Generate_Fsx _ ->
-                    "Generate a .fsx file to test the contract with"
+                    "generate a .fsx file to test the contract with"
                 | Run_Fsx _ ->
-                    "Run the given .fsx file, automatically loading Zen dlls."
+                    "run the given .fsx file, automatically loading Zen dlls"
                 | ContractId _ ->
-                    "Compute contract ID."
+                    "compute contract ID"
                 | ACost _ ->
-                    "Compute activation cost."
+                    "compute activation cost"
                 | Info _ ->
-                    "Get contract information"
+                    "get contract information"
 
 
 

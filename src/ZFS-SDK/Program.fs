@@ -19,30 +19,30 @@ let handle_log_types<'a> : Option<'a> -> string =
 
 
 module Strings =
-    
+
     let FILENAME : Printf.StringFormat<string -> string> =
-        "File name of the %s"
-    
+        "file name of the %s"
+
     [<Literal>]
     let Z3RLIMIT =
         "Z3 rlimit"
-    
+
     [<Literal>]
     let LOG_TYPES =
-        "Log types"
-    
+        "log types"
+
     [<Literal>]
     let NUM_OF_BLOCKS =
-        "Number of blocks"
-    
+        "number of blocks"
+
     [<Literal>]
     let FIELD =
-        "Return info about a specific field"
+        "return info about a specific field"
 
 
 
 module Create =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -52,30 +52,30 @@ module Create =
                     match s with
                     | Filename _ ->
                         sprintf Strings.FILENAME "generated contract"
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             let code =
                 ContractTemplate.code filename
-            
+
             System.IO.File.WriteAllText(filename, code)
-            Utils.log "Created %s" filename
+            Utils.log "created %s" filename
             Ok filename
 
 
 
 module Elaborate =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -93,25 +93,25 @@ module Elaborate =
                         Strings.Z3RLIMIT
                     | Log_Types ->
                         Strings.LOG_TYPES
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-        
+
             let filename =
                 args.GetResult(Filename)
-            
+
             let z3rlimit =
                 args.TryGetResult(Z3rlimit)
-            
+
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
-            
+
             Ok filename
             >>= ZFStar.elaborate
             >>= ZFStar.verify z3rlimit [logtypes]
@@ -119,7 +119,7 @@ module Elaborate =
 
 
 module Verify =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -128,7 +128,7 @@ module Verify =
         | [<Unique ; AltCommandLine("-t")>]
             Log_Types
         with
-            interface IArgParserTemplate with                
+            interface IArgParserTemplate with
                 member s.Usage =
                     match s with
                     | Filename _ ->
@@ -137,32 +137,32 @@ module Verify =
                         Strings.Z3RLIMIT
                     | Log_Types ->
                         Strings.LOG_TYPES
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             let z3rlimit =
                 args.TryGetResult(Z3rlimit)
-            
+
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
-            
+
             Ok filename
             >>= ZFStar.verify z3rlimit [logtypes]
 
 
 
 module Extract =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -180,33 +180,33 @@ module Extract =
                         Strings.Z3RLIMIT
                     | Log_Types ->
                         Strings.LOG_TYPES
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             let z3rlimit =
                 args.TryGetResult(Z3rlimit)
-            
+
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
-            
+
             Ok filename
-            >>= ZFStar.elaborate 
+            >>= ZFStar.elaborate
             >>= ZFStar.extract z3rlimit [logtypes]
 
 
 
 module Compile =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -224,25 +224,25 @@ module Compile =
                         Strings.Z3RLIMIT
                     | Log_Types ->
                         Strings.LOG_TYPES
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             let z3rlimit =
                 args.TryGetResult(Z3rlimit)
-            
+
             let logtypes =
                 handle_log_types <| args.TryGetResult(Log_Types)
-            
+
             Ok filename
             >>= ZFStar.elaborate
             >>= ZFStar.extract z3rlimit [logtypes]
@@ -251,7 +251,7 @@ module Compile =
 
 
 module Pack =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -261,25 +261,25 @@ module Pack =
                     match s with
                     | Filename _ ->
                         sprintf Strings.FILENAME "contract to pack"
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             ZFStar.pack filename
 
 
 
 module Generate_Fsx =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -289,46 +289,46 @@ module Generate_Fsx =
                     match s with
                     | Filename _ ->
                         sprintf Strings.FILENAME "source contract to generate FSX script from"
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let contract_filename =
                 args.GetResult(Filename)
-            
+
             let contract_code =
                 contract_filename
                 |> System.IO.File.ReadAllText
-            
+
             let module_name =
                 contract_filename
                 |> ASTUtils.parse_file
                 |> ASTUtils.get_module_name
-            
+
             let script_filename =
                 System.IO.Path.ChangeExtension
-                    ( path = contract_filename , extension = ".fsx" )  
-            
+                    ( path = contract_filename , extension = ".fsx" )
+
             let script_code =
                 FSX.generate module_name contract_code
-            
+
             System.IO.File.WriteAllText
                 ( path = script_filename , contents = script_code )
-            
-            sprintf "Generated. to run:\nzebra -r %s" script_filename
+
+            sprintf "generated. to run:\nzebra -r %s" script_filename
             |> Ok
 
 
 
 
 module Run_Fsx =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -338,25 +338,25 @@ module Run_Fsx =
                     match s with
                     | Filename _ ->
                         sprintf Strings.FILENAME "FSX script"
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             Execute.fsx filename
 
 
 
 module ContractId =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -366,25 +366,25 @@ module ContractId =
                     match s with
                     | Filename _ ->
                         sprintf Strings.FILENAME "contract"
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             Query.contractId filename
 
 
 
 module ACost =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -402,32 +402,32 @@ module ACost =
                         Strings.NUM_OF_BLOCKS
                     | Z3rlimit    _ ->
                         Strings.Z3RLIMIT
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             let numOfBlocks =
                 args.GetResult(NumOfBlocks)
-            
+
             let z3rlimit =
                 args.TryGetResult(Z3rlimit)
                 |> Option.defaultValue DEFAULT_Z3RLIMIT
-            
+
             Query.activationCost z3rlimit numOfBlocks filename
 
 
 
 module Info =
-    
+
     type Arg =
         | [<MainCommand ; ExactlyOnce>]
             Filename of filename:string
@@ -445,32 +445,32 @@ module Info =
                         Strings.Z3RLIMIT
                     | Field _ ->
                         Strings.FIELD
-    
-    
+
+
     let handle (parser : ArgumentParser<Arg>) (args : ParseResults<Arg>) : Result<string, string> =
-        
+
         if List.isEmpty <| args.GetAllResults() then
-            
+
             Ok <| parser.PrintUsage()
-            
+
         else
-            
+
             let filename =
                 args.GetResult(Filename)
-            
+
             let z3rlimit =
                 args.TryGetResult(Z3rlimit)
                 |> Option.defaultValue DEFAULT_Z3RLIMIT
-            
+
             let field =
                 args.TryGetResult(Field)
-            
+
             Query.info z3rlimit field filename
-    
+
     module Fields =
-        
+
         let handle() =
-            Query.Info.listFields() 
+            Query.Info.listFields()
 
 
 type Command =
@@ -503,29 +503,29 @@ type Command =
             member s.Usage =
                 match s with
                 | Create _ ->
-                    "Create a new template contract"
+                    "create a new template contract"
                 | Elaborate _ ->
-                    "Elaborate the source File and verify"
+                    "elaborate the source File and verify"
                 | Verify _ ->
-                    "Verify the source file"
+                    "verify the source file"
                 | Extract _ ->
-                    "Extract the source file"
+                    "extract the source file"
                 | Compile _ ->
-                    "Compile from source file"
+                    "compile from source file"
                 | Pack _ ->
-                    "Pack the contract to be activated on zen blockchain"
+                    "pack the contract to be activated on zen blockchain"
                 | Generate_Fsx _ ->
-                    "Generate a .fsx file to test the contract with"
+                    "generate a .fsx file to test the contract with"
                 | Run_Fsx _ ->
-                    "Run the given .fsx file, automatically loading Zen dlls."
+                    "run the given .fsx file, automatically loading Zen dlls"
                 | ContractId _ ->
-                    "Compute contract ID."
+                    "compute contract ID"
                 | ACost _ ->
-                    "Compute activation cost."
+                    "compute activation cost"
                 | Info _ ->
-                    "Get contract information"
+                    "get contract information"
                 | Fields ->
-                    "List possible info fields"
+                    "list possible info fields"
 
 
 

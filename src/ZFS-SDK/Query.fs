@@ -17,22 +17,49 @@ module ContractId =
     let computeHash version (code:string) =
         let versionBytes = BigEndianBitConverter.uint32ToBytes version
         let codeBytes = System.Text.Encoding.UTF8.GetBytes code
-        
+
         Consensus.Hash.computeMultiple [versionBytes; codeBytes]
 
     let makeContractId version code =
         ContractId (version, computeHash version code)
-    
+
     let run (filename : string) : Result<string, string> =
-        filename
-        |> System.IO.File.ReadAllText
-        |> makeContractId 0u
-        |> sprintf "%A" 
-        |> Ok
+        result {
+            let code =
+                filename
+                |> System.IO.File.ReadAllText
+
+            return! ZFStar.ModuleDetection.checkNoModuleHeader code
+
+            return!
+                code
+                |> makeContractId 0u
+                |> sprintf "%A"
+                |> Ok
+        }
 
 
 
 module Info =
+
+    let invalidFieldError : Printf.StringFormat<string -> string> =
+        "invalid field: %s"
+
+    let private getField (field : string) : Result<System.Reflection.PropertyInfo , string> =
+        typeof<ContractV0>.GetProperties()
+        |> Array.tryFind (fun item -> item.Name = field)
+        |> Result.ofOption (sprintf invalidFieldError field)
+
+    let private getFieldValue (field : System.Reflection.PropertyInfo) (info : ContractV0) : Result<string , string> =
+        string (field.GetValue info)
+        |> Ok
+
+    let listFields() : Result<string , string> =
+        typeof<ContractV0>.GetProperties()
+        |> Array.map (fun item -> item.Name)
+        |> Array.toList
+        |> String.concat "\n"
+        |> Ok
 
     let getModuleName : Consensus.Hash.Hash -> string =
         Hash.bytes
@@ -56,15 +83,15 @@ module Info =
 
     let compute (z3rlimit : uint32) (code : string) : Result<ContractV0 , string> =
         result {
-            
+
             return! ZFStar.ModuleDetection.checkNoModuleHeader code
-            
+
             let! hints =
                 recordHints z3rlimit code
-            
+
             let! queries =
                 ZFStar.totalQueries hints
-            
+
             return {
                 code    = code
                 rlimit  = z3rlimit
@@ -72,12 +99,32 @@ module Info =
                 queries = queries
             }
         }
-    
-    let run (rlimit : uint32) (filename : string) : Result<string, string> =
-        filename
-        |> System.IO.File.ReadAllText
-        |> compute rlimit
-        |> Result.map (toJson >> string)
+
+    let run (rlimit : uint32) (field : string option) (filename : string) : Result<string, string> =
+        result {
+            match field with
+
+            | Some field ->
+
+                let! field =
+                    getField field
+
+                let! info =
+                    filename
+                    |> System.IO.File.ReadAllText
+                    |> compute rlimit
+
+                return! getFieldValue field info
+
+            | None ->
+
+                let! info =
+                    filename
+                    |> System.IO.File.ReadAllText
+                    |> compute rlimit
+
+                return string (toJson info)
+        }
 
 
 
@@ -124,15 +171,15 @@ module ActivationCost =
     
     let run (z3rlimit : uint32) (numberOfBlocks : uint32) (filename : string) : Result<string, string> =
         result {
-            
+
             let code =
                 System.IO.File.ReadAllText filename
-            
+
             let! cost =
                 compute Consensus.Chain.mainParameters z3rlimit numberOfBlocks code
-            
+
             return (sprintf "%A" cost)
-            
+
         }
 
 

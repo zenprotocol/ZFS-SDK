@@ -4,14 +4,14 @@ source https://www.nuget.org/api/v2
 framework: 47
 
 nuget FSharp.Compiler.Tools
-nuget FSharp.Core
-nuget System.ValueTuple
+nuget FSharp.Core 4.3.4
 nuget ZFS-Tools 0.0.24
 nuget FSharpx.Extras
 nuget ZFStar 0.0.26
 nuget FSharp.Configuration
 nuget FSharp.Compatibility.OCaml
 nuget Argu
+nuget NetMQ 4.0.0.207-pre
 
 source https://www.myget.org/f/zenprotocol
 framework: 47

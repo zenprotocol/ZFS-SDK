@@ -2,6 +2,7 @@ module Execute
 
 open System
 
+open System.Diagnostics
 open Utils
 
 
@@ -47,15 +48,23 @@ module FSX =
         use proc =
             new Diagnostics.Process(StartInfo=pStartInfo)
         
+        let outHandler (_sender:obj) (args:Diagnostics.DataReceivedEventArgs) =
+            printfn "%s" args.Data
+        
+        let errHandler (_sender:obj) (args:Diagnostics.DataReceivedEventArgs) =
+            eprintfn "%s" args.Data
+        
         try
             if proc.Start() then
+                proc.ErrorDataReceived.AddHandler <| DataReceivedEventHandler errHandler
+                proc.OutputDataReceived.AddHandler <| DataReceivedEventHandler outHandler
+                proc.BeginErrorReadLine()
+                proc.BeginOutputReadLine()
                 proc.WaitForExit()
-                printfn "%s" <| proc.StandardOutput.ReadToEnd()
                 if proc.ExitCode = 0 then
                     Ok ""
                 else
                     proc.StandardError.ReadToEnd()
-                    |> sprintf "%s"
                     |> Error
             else
                 Error "failed to start fsx"

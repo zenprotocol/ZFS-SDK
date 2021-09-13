@@ -10,23 +10,63 @@ Zen-SDK Repo -&gt; [https://github.com/zenprotocol/ZFS-SDK](https://github.com/z
 
 ## Installation
 
+### From Source
+
 You will need to have mono installed. Instructions for your OS can be found [here](http://www.mono-project.com/download/). For Linux, you will need either the `mono-devel` or `mono-complete` package. Do not install mono from your package manager - follow the instructions on the mono website.
+
+#### Linux
+
+- Clone this repo
+- Run the following commands. Note that this could take a few minutes.
+- `cd ZFS-SDK`
+- `./paket restore`
+- `./build.sh`
+
+#### OSX
+
+- Clone this repo
+- Run the following commands. Note that this could take a few minutes.
+- `cd ZFS-SDK`
+- `mono paket restore`
+- `./build.sh`
+
+### NPM Package
+
+#### OSX
+
+1. Install [mono-devel](http://www.mono-project.com/download). If you choose to install via a package manager, add Mono's own repository first.
+2. [Install Nodejs](https://nodejs.org/en/download/)
+    1. Recommended to install using [NVM](https://github.com/creationix/nvm#installation)
+    2. Recommended to install Node LTS `nvm install 8.9.4`
+
+### Windows
+
+1. Install [.NET Framework 4.7](https://www.microsoft.com/en-us/download/details.aspx?id=55167).
+2. [Install Nodejs](https://nodejs.org/en/download/) (LTS version recommended)
+3. Open the [Command Prompt](https://www.lifewire.com/how-to-open-command-prompt-2618089)
 
 ### Linux
 
-* Clone this repo
-* Run the following commands. Note that this could take a few minutes.
-* `cd ZFS-SDK`
-* `./paket restore`
-* `./build.sh`
+1. Install [mono-devel](http://www.mono-project.com/download). If you choose to install via a package manager, add Mono's own repository first.
+2. Install Nodejs (Version >= 6)
+    1. Recommended to install using [NVM](https://github.com/creationix/nvm#installation)
+    2. Recommended to install Node LTS (8.9.4) `nvm install --lts`
 
-### OSX
+### Point your npm directory to our repository
 
-* Clone this repo
-* Run the following commands. Note that this could take a few minutes.
-* `cd ZFS-SDK`
-* `mono paket restore`
-* `./build.sh`
+Run the following commands in the Terminal / Command Prompt:
+
+```
+npm config set @zen:registry https://www.myget.org/F/zenprotocol/npm/
+```
+
+### Installing / Updating
+
+Run the following commands in the Terminal / Command Prompt:
+
+```
+npm install @zen/zebra -g
+```
 
 ## Usage
 

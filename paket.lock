@@ -99,25 +99,25 @@ NUGET
     ZFS-Tools (0.0.24)
     ZFStar (0.0.26)
   remote: https://www.myget.org/f/zenprotocol
-    Consensus (1.0.5)
+    Consensus (1.0.7-zulib.44)
       FSharp.Compiler.Tools
       FSharp.Core (4.3.4)
       FSharpx.Extras
       FsNetMQ (>= 0.2.8)
       FsPickler
-      Infrastructure (>= 1.0.5)
+      Infrastructure (>= 1.0.7-zulib.44)
       Logary
       Zulib (>= 0.0.1)
-    ContractsTestingLib (0.1.2)
-      Consensus (1.0.5)
+    ContractsTestingLib (0.1.3-pre-zulib.44)
+      Consensus (1.0.7-zulib.44)
       FsBech32 (0.1.5)
       FSharpx.Extras
-      Infrastructure (1.0.5)
-      Zulib (0.3.42)
+      Infrastructure (1.0.7-zulib.44)
+      Zulib (0.3.44)
     FsBech32 (0.1.5)
       FSharp.Core (4.3.4)
       FSharpx.Extras
-    Infrastructure (1.0.5)
+    Infrastructure (1.0.7-zulib.44)
       BouncyCastle (>= 1.8.4)
       FSharp.Compiler.Tools
       FSharp.Control.Reactive
@@ -135,7 +135,7 @@ NUGET
     zen_z3_linux (4.5.1.8-v1f29cebd4df)
     zen_z3_osx (4.5.1.8-v1f29cebd4df6)
     zen_z3_windows (4.5.1.7-v1f29cebd4df)
-    Zulib (0.3.42)
+    Zulib (0.3.44)
       BouncyCastle
       FAKE (>= 4.0 < 5.0)
       FsBech32 (>= 0.1.4)
